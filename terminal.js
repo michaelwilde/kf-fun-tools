@@ -9,14 +9,15 @@ const header = document.getElementById('header');
 
 let isHacked = false;
 
+// Lighter ROYGBIV colors
 const roybgivColors = [
-  '#FF0000', // Red
-  '#FFA500', // Orange
-  '#FFFF00', // Yellow
-  '#00FF00', // Green
-  '#0000FF', // Blue
-  '#4B0082', // Indigo
-  '#EE82EE'  // Violet
+  '#FF6666', // Light Red
+  '#FFCC66', // Light Orange
+  '#FFFF99', // Light Yellow
+  '#66FF66', // Light Green
+  '#66CCFF', // Light Blue
+  '#9999FF', // Light Indigo
+  '#FF99FF'  // Light Violet
 ];
 
 input.addEventListener('keydown', (e) => {
@@ -67,6 +68,9 @@ function applyPrideTheme() {
 input.addEventListener('input', () => {
   if (terminal.style.color === '#fff') {
     applyRainbowText(input, input.value);
+  } else {
+    input.innerHTML = input.value; // Reset to plain text for other themes
+    input.style.color = terminal.style.color; // Match current theme
   }
 });
 
@@ -162,9 +166,12 @@ function processCommand(cmd) {
       terminal.style.background = '#000';
       terminal.style.color = '#0f0';
       header.style.color = '#0f0';
+      header.querySelector('a').innerHTML = 'Kloudfuse OS Version 3.3'; // Reset to plain text
       header.querySelector('a').style.color = '#0f0';
+      prompt.innerHTML = isHacked ? 'root@kloudfuse> ' : 'kloudfuse> '; // Reset to plain text
       prompt.style.color = '#0f0';
       input.style.color = '#0f0';
+      input.innerHTML = input.value; // Reset to plain text
       cursor.style.background = '#0f0';
       canvas.style.borderColor = '#0f0';
       output.style.color = '#0f0';
@@ -179,9 +186,12 @@ function processCommand(cmd) {
       terminal.style.background = '#fff';
       terminal.style.color = '#4B0082';
       header.style.color = '#4B0082';
+      header.querySelector('a').innerHTML = 'Kloudfuse OS Version 3.3';
       header.querySelector('a').style.color = '#4B0082';
+      prompt.innerHTML = isHacked ? 'root@kloudfuse> ' : 'kloudfuse> ';
       prompt.style.color = '#4B0082';
       input.style.color = '#4B0082';
+      input.innerHTML = input.value;
       cursor.style.background = '#4B0082';
       canvas.style.borderColor = '#4B0082';
       output.style.color = '#4B0082';
@@ -196,9 +206,12 @@ function processCommand(cmd) {
       terminal.style.background = '#000';
       terminal.style.color = '#ff0';
       header.style.color = '#ff0';
+      header.querySelector('a').innerHTML = 'Kloudfuse OS Version 3.3';
       header.querySelector('a').style.color = '#ff0';
+      prompt.innerHTML = isHacked ? 'root@kloudfuse> ' : 'kloudfuse> ';
       prompt.style.color = '#ff0';
       input.style.color = '#ff0';
+      input.innerHTML = input.value;
       cursor.style.background = '#ff0';
       canvas.style.borderColor = '#ff0';
       output.style.color = '#ff0';
@@ -228,6 +241,7 @@ function processCommand(cmd) {
         isHacked = false;
         response = 'Logged out of root access.';
         if (terminal.style.color === '#fff') applyPrideTheme();
+        else prompt.style.color = terminal.style.color; // Match current theme
       } else {
         response = 'Not in root mode.';
       }
@@ -239,7 +253,7 @@ function processCommand(cmd) {
       startTetrisGame();
       return;
     case 'game':
-      response = 'Choose a game: game brickout, game tetris';
+      response = 'Choose a game: game brickout, game tetris, game joshua';
       break;
     case 'globalthermonuclearwar':
       output.innerHTML += '<div id="wargames-output">Shall we play a game?</div>';
@@ -435,7 +449,7 @@ function startBrickoutGame() {
 
 // Tetris Game
 function startTetrisGame() {
-  output.innerHTML = '<div>Starting Tetris... Use ← → to move, ↑ to rotate, ↓ to drop! Esc or Ctrl-C to exit.</div>';
+  output.innerHTML = '<div>Starting Tetris... Use ← and → keys to move, ↑ to rotate, ↓ to drop! Esc or Ctrl-C to exit.</div>';
   if (terminal.style.color === '#fff') {
     const tetrisDiv = output.lastChild;
     applyRainbowText(tetrisDiv, tetrisDiv.textContent);
@@ -525,4 +539,125 @@ function startTetrisGame() {
     ctx.fillStyle = '#0f0';
     ctx.font = 'bold 30px Roboto Mono';
     ctx.textAlign = 'center';
-    ctx.fillText('GAME OVER', WIDTH / 2, HEIGHT 
+    ctx.fillText('GAME OVER', WIDTH / 2, HEIGHT / 2 + 10);
+  }
+
+  function collide(x, y, shape) {
+    for (let r = 0; r < shape.length; r++) {
+      for (let c = 0; c < shape[r].length; c++) {
+        if (shape[r][c]) {
+          const newX = x + c;
+          const newY = y + r;
+          if (newX < 0 || newX >= cols || newY >= rows || (newY >= 0 && board[newY][newX])) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  }
+
+  function merge() {
+    for (let r = 0; r < currentShape.length; r++) {
+      for (let c = 0; c < currentShape[r].length; c++) {
+        if (currentShape[r][c] && currentY + r >= 0) {
+          board[currentY + r][currentX + c] = colors[shapes.indexOf(shapes.find(s => s.toString() === currentShape.toString()))];
+        }
+      }
+    }
+  }
+
+  function clearLines() {
+    for (let r = rows - 1; r >= 0; r--) {
+      if (board[r].every(cell => cell)) {
+        board.splice(r, 1);
+        board.unshift(Array(cols).fill(0));
+      }
+    }
+  }
+
+  function rotateShape() {
+    const rotated = currentShape[0].map((_, index) => currentShape.map(row => row[index]).reverse());
+    if (!collide(currentX, currentY, rotated)) {
+      currentShape = rotated;
+    }
+  }
+
+  let dropCounter = 0;
+  const dropInterval = 30;
+
+  document.addEventListener('keydown', keyDownHandler);
+  document.addEventListener('keyup', keyUpHandler);
+
+  let leftPressed = false;
+  let rightPressed = false;
+  let downPressed = false;
+  function keyDownHandler(e) {
+    if (e.key === 'ArrowLeft') leftPressed = true;
+    else if (e.key === 'ArrowRight') rightPressed = true;
+    else if (e.key === 'ArrowDown') downPressed = true;
+    else if (e.key === 'ArrowUp' && !e.repeat) rotateShape();
+    if (e.key === 'Escape' || (e.ctrlKey && e.key === 'c')) {
+      drawGameOverModal();
+      setTimeout(() => {
+        endGame();
+        output.innerHTML = '';
+      }, 1000);
+    }
+  }
+  function keyUpHandler(e) {
+    if (e.key === 'ArrowLeft') leftPressed = false;
+    else if (e.key === 'ArrowRight') rightPressed = false;
+    else if (e.key === 'ArrowDown') downPressed = false;
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, WIDTH, HEIGHT);
+    drawBackgroundAndLogo();
+    drawBoard();
+    drawShape();
+
+    dropCounter++;
+    if (dropCounter >= dropInterval || downPressed) {
+      if (!collide(currentX, currentY + 1, currentShape)) {
+        currentY++;
+      } else if (currentY < 0) {
+      } else {
+        merge();
+        clearLines();
+        currentShape = randomShape();
+        currentX = Math.floor(cols / 2) - Math.floor(currentShape[0].length / 2);
+        currentY = -currentShape.length;
+        if (collide(currentX, currentY, currentShape)) {
+          drawGameOverModal();
+          setTimeout(() => {
+            endGame();
+            output.innerHTML = '<div>Game Over! Type anything to continue.</div>';
+            if (terminal.style.color === '#fff') {
+              const gameOverDiv = output.lastChild;
+              applyRainbowText(gameOverDiv, gameOverDiv.textContent);
+            }
+          }, 1000);
+          return;
+        }
+      }
+      dropCounter = 0;
+    }
+
+    if (leftPressed && !collide(currentX - 1, currentY, currentShape)) currentX--;
+    if (rightPressed && !collide(currentX + 1, currentY, currentShape)) currentX++;
+
+    requestAnimationFrame(draw);
+  }
+
+  function endGame() {
+    canvas.style.display = 'none';
+    input.disabled = false;
+    input.focus();
+    ctx.clearRect(0, 0, WIDTH, HEIGHT);
+    document.removeEventListener('keydown', keyDownHandler);
+    document.removeEventListener('keyup', keyUpHandler);
+  }
+
+  draw();
+}
