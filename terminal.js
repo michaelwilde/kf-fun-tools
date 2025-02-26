@@ -52,8 +52,7 @@ function applyPrideTheme() {
   terminal.style.color = '#fff';
   applyRainbowText(header.querySelector('a'), 'Kloudfuse OS Version 3.3');
   applyRainbowText(prompt, isHacked ? 'root@kloudfuse> ' : 'kloudfuse> ');
-  input.style.color = '#fff';
-  applyRainbowText(input, input.value);
+  input.style.color = roybgivColors[0]; // Start with light red for input
   cursor.style.background = roybgivColors[0];
   canvas.style.borderColor = '#fff';
 
@@ -64,15 +63,6 @@ function applyPrideTheme() {
     applyRainbowText(line, text);
   });
 }
-
-input.addEventListener('input', () => {
-  if (terminal.style.color === '#fff') {
-    applyRainbowText(input, input.value);
-  } else {
-    input.innerHTML = input.value; // Reset to plain text for other themes
-    input.style.color = terminal.style.color; // Match current theme
-  }
-});
 
 function processCommand(cmd) {
   let response = '';
@@ -166,12 +156,11 @@ function processCommand(cmd) {
       terminal.style.background = '#000';
       terminal.style.color = '#0f0';
       header.style.color = '#0f0';
-      header.querySelector('a').innerHTML = 'Kloudfuse OS Version 3.3'; // Reset to plain text
+      header.querySelector('a').innerHTML = 'Kloudfuse OS Version 3.3';
       header.querySelector('a').style.color = '#0f0';
-      prompt.innerHTML = isHacked ? 'root@kloudfuse> ' : 'kloudfuse> '; // Reset to plain text
+      prompt.innerHTML = isHacked ? 'root@kloudfuse> ' : 'kloudfuse> ';
       prompt.style.color = '#0f0';
       input.style.color = '#0f0';
-      input.innerHTML = input.value; // Reset to plain text
       cursor.style.background = '#0f0';
       canvas.style.borderColor = '#0f0';
       output.style.color = '#0f0';
@@ -191,7 +180,6 @@ function processCommand(cmd) {
       prompt.innerHTML = isHacked ? 'root@kloudfuse> ' : 'kloudfuse> ';
       prompt.style.color = '#4B0082';
       input.style.color = '#4B0082';
-      input.innerHTML = input.value;
       cursor.style.background = '#4B0082';
       canvas.style.borderColor = '#4B0082';
       output.style.color = '#4B0082';
@@ -211,7 +199,6 @@ function processCommand(cmd) {
       prompt.innerHTML = isHacked ? 'root@kloudfuse> ' : 'kloudfuse> ';
       prompt.style.color = '#ff0';
       input.style.color = '#ff0';
-      input.innerHTML = input.value;
       cursor.style.background = '#ff0';
       canvas.style.borderColor = '#ff0';
       output.style.color = '#ff0';
@@ -241,7 +228,7 @@ function processCommand(cmd) {
         isHacked = false;
         response = 'Logged out of root access.';
         if (terminal.style.color === '#fff') applyPrideTheme();
-        else prompt.style.color = terminal.style.color; // Match current theme
+        else prompt.style.color = terminal.style.color;
       } else {
         response = 'Not in root mode.';
       }
