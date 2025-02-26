@@ -5,10 +5,10 @@ const canvas = document.getElementById('game-canvas');
 const prompt = document.getElementById('prompt');
 const cursor = document.getElementById('cursor');
 const inputWrapper = document.getElementById('input-wrapper');
+const header = document.getElementById('header');
 
 let isHacked = false;
 
-// ROYGBIV colors
 const roybgivColors = [
   '#FF0000', // Red
   '#FFA500', // Orange
@@ -39,15 +39,15 @@ function updateCursorPosition() {
 function applyPrideTheme() {
   terminal.style.background = '#000';
   terminal.style.color = '#fff'; // Base color, overridden by ROYGBIV
-  prompt.style.color = roybgivColors[0]; // Prompt gets Red
-  input.style.color = roybgivColors[1]; // Input gets Orange
-  cursor.style.background = roybgivColors[2]; // Cursor gets Yellow
+  header.style.color = roybgivColors[0]; // Header gets Red
+  prompt.style.color = roybgivColors[1]; // Prompt gets Orange
+  input.style.color = roybgivColors[2]; // Input gets Yellow
+  cursor.style.background = roybgivColors[3]; // Cursor gets Green
   canvas.style.borderColor = '#fff';
 
-  // Apply ROYGBIV to existing output lines
   const outputLines = output.querySelectorAll('div');
   outputLines.forEach((line, index) => {
-    line.style.color = roybgivColors[(index + 3) % 7]; // Start at Green (3rd color) for responses
+    line.style.color = roybgivColors[(index + 4) % 7]; // Start at Blue for responses
   });
 }
 
@@ -55,13 +55,15 @@ function processCommand(cmd) {
   let response = '';
   switch (cmd) {
     case 'help':
-      response = 'Kloudfuse OS Version 3.3\nCommands: whoami, about, hack, joke, explore, theme [dark/light/neon/pride], clear' + (isHacked ? ', exit' : '');
+    case 'man kloudfuse':
+      response = 'Kloudfuse OS Version 3.3\nCommands: whoami, about, hack, joke, explore, theme [dark/light/neon/pride], clear, game' + (isHacked ? ', exit' : '');
+      break;
+    case '?':
+    case 'about':
+      response = 'Kloudfuse OS Version 3.3\nWe are Kloudfuse, full stack observability. Hosted by you. Managed by us. Far less expensive. Far more secure.';
       break;
     case 'whoami':
       response = 'curious@kloudfuse.com';
-      break;
-    case 'about':
-      response = 'Kloudfuse OS Version 3.3\nWe are Kloudfuse, full stack observability. Hosted by you. Managed by us. Far less expensive. Far more secure.';
       break;
     case 'hack':
       output.innerHTML += '<div id="hack-output">Hacking initiated.</div>';
@@ -71,8 +73,8 @@ function processCommand(cmd) {
         dots++;
         document.getElementById('hack-output').innerText = 'Hacking initiated.' + '.'.repeat(dots);
         terminal.scrollTop = terminal.scrollHeight;
-        if (terminal.style.color === '#fff') { // If in pride mode
-          document.getElementById('hack-output').style.color = roybgivColors[(dots + 2) % 7]; // Cycle ROYGBIV
+        if (terminal.style.color === '#fff') {
+          document.getElementById('hack-output').style.color = roybgivColors[(dots + 3) % 7];
         }
       }, 300);
       setTimeout(() => {
@@ -80,8 +82,8 @@ function processCommand(cmd) {
         output.innerHTML += '<div>ACCESS GRANTED</div>';
         prompt.innerText = 'root@kloudfuse> ';
         isHacked = true;
-        if (terminal.style.color === '#fff') { // If in pride mode
-          applyPrideTheme(); // Reapply to update prompt and new line
+        if (terminal.style.color === '#fff') {
+          applyPrideTheme();
         }
         terminal.scrollTop = terminal.scrollHeight;
       }, 3000);
@@ -124,8 +126,8 @@ function processCommand(cmd) {
       setTimeout(() => {
         output.innerHTML += "<div>Opening a new tab, don’t worry terminal is still here, come back and hang out!</div>";
         window.open(choice.url, '_blank');
-        if (terminal.style.color === '#fff') { // If in pride mode
-          applyPrideTheme(); // Reapply to color new line
+        if (terminal.style.color === '#fff') {
+          applyPrideTheme();
         }
         terminal.scrollTop = terminal.scrollHeight;
       }, 2000);
@@ -133,37 +135,40 @@ function processCommand(cmd) {
     case 'theme dark':
       terminal.style.background = '#000';
       terminal.style.color = '#0f0';
+      header.style.color = '#0f0';
       prompt.style.color = '#0f0';
       input.style.color = '#0f0';
       cursor.style.background = '#0f0';
       canvas.style.borderColor = '#0f0';
-      output.style.color = '#0f0'; // Reset output color
+      output.style.color = '#0f0';
       const outputLinesDark = output.querySelectorAll('div');
-      outputLinesDark.forEach(line => line.style.color = '#0f0'); // Reset all lines
+      outputLinesDark.forEach(line => line.style.color = '#0f0');
       response = 'Theme set to dark.';
       break;
     case 'theme light':
       terminal.style.background = '#fff';
       terminal.style.color = '#4B0082';
+      header.style.color = '#4B0082';
       prompt.style.color = '#4B0082';
       input.style.color = '#4B0082';
       cursor.style.background = '#4B0082';
       canvas.style.borderColor = '#4B0082';
-      output.style.color = '#4B0082'; // Reset output color
+      output.style.color = '#4B0082';
       const outputLinesLight = output.querySelectorAll('div');
-      outputLinesLight.forEach(line => line.style.color = '#4B0082'); // Reset all lines
+      outputLinesLight.forEach(line => line.style.color = '#4B0082');
       response = 'Theme set to light.';
       break;
     case 'theme neon':
       terminal.style.background = '#000';
       terminal.style.color = '#ff0';
+      header.style.color = '#ff0';
       prompt.style.color = '#ff0';
       input.style.color = '#ff0';
       cursor.style.background = '#ff0';
       canvas.style.borderColor = '#ff0';
-      output.style.color = '#ff0'; // Reset output color
+      output.style.color = '#ff0';
       const outputLinesNeon = output.querySelectorAll('div');
-      outputLinesNeon.forEach(line => line.style.color = '#ff0'); // Reset all lines
+      outputLinesNeon.forEach(line => line.style.color = '#ff0');
       response = 'Theme set to neon.';
       break;
     case 'theme pride':
@@ -203,10 +208,10 @@ function processCommand(cmd) {
   const responseDiv = document.createElement('div');
   responseDiv.innerHTML = response.replace('\n', '<br>');
   output.appendChild(responseDiv);
-  if (terminal.style.color === '#fff') { // If in pride mode
+  if (terminal.style.color === '#fff') {
     const outputLines = output.querySelectorAll('div');
     outputLines.forEach((line, index) => {
-      line.style.color = roybgivColors[(index + 3) % 7]; // Start at Green for responses
+      line.style.color = roybgivColors[(index + 4) % 7];
     });
   }
   terminal.scrollTop = terminal.scrollHeight;
@@ -215,7 +220,7 @@ function processCommand(cmd) {
 // Brickout Game
 function startBrickoutGame() {
   output.innerHTML = '<div>Starting Brickout... Use ← and → keys to move the paddle! Esc or Ctrl-C to exit.</div>';
-  if (terminal.style.color === '#fff') { // If in pride mode
+  if (terminal.style.color === '#fff') {
     applyPrideTheme();
   }
   canvas.style.display = 'block';
@@ -528,7 +533,6 @@ function startTetrisGame() {
       if (!collide(currentX, currentY + 1, currentShape)) {
         currentY++;
       } else if (currentY < 0) {
-        // Shape still above play area
       } else {
         merge();
         clearLines();
