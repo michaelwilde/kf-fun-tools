@@ -56,11 +56,11 @@ function processCommand(cmd) {
   switch (cmd) {
     case 'help':
     case 'man kloudfuse':
-      response = 'Kloudfuse OS Version 3.3\nCommands: whoami, about, hack, joke, explore, theme [dark/light/neon/pride], clear, game' + (isHacked ? ', exit' : '');
+      response = 'Commands: whoami, about, hack, joke, explore, theme [dark/light/neon/pride], clear, game' + (isHacked ? ', exit' : '');
       break;
     case '?':
     case 'about':
-      response = 'Kloudfuse OS Version 3.3\nWe are Kloudfuse, full stack observability. Hosted by you. Managed by us. Far less expensive. Far more secure.';
+      response = 'We are Kloudfuse, full stack observability. Hosted by you. Managed by us. Far less expensive. Far more secure.';
       break;
     case 'whoami':
       response = 'curious@kloudfuse.com';
