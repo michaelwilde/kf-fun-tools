@@ -69,7 +69,7 @@ function processCommand(cmd) {
   switch (cmd) {
     case 'help':
     case 'man kloudfuse':
-      response = 'Commands: whoami, about, hack, joke, explore, theme [dark/light/neon/pride], clear, game, joshua' + (isHacked ? ', exit' : '');
+      response = 'Commands: whoami, about, hack, joke, explore, theme [dark/light/neon/pride], clear, game' + (isHacked ? ', exit' : '');
       break;
     case '?':
     case 'about':
@@ -87,13 +87,21 @@ function processCommand(cmd) {
         const hackText = 'Hacking initiated.' + '.'.repeat(dots);
         const hackOutput = document.getElementById('hack-output');
         hackOutput.innerHTML = '';
-        applyRainbowText(hackOutput, hackText);
+        if (terminal.style.color === '#fff') {
+          applyRainbowText(hackOutput, hackText);
+        } else {
+          hackOutput.textContent = hackText;
+        }
         terminal.scrollTop = terminal.scrollHeight;
       }, 300);
       setTimeout(() => {
         clearInterval(hackInterval);
         const grantedDiv = document.createElement('div');
-        applyRainbowText(grantedDiv, 'ACCESS GRANTED');
+        if (terminal.style.color === '#fff') {
+          applyRainbowText(grantedDiv, 'ACCESS GRANTED');
+        } else {
+          grantedDiv.textContent = 'ACCESS GRANTED';
+        }
         output.appendChild(grantedDiv);
         prompt.innerText = 'root@kloudfuse> ';
         isHacked = true;
@@ -138,12 +146,20 @@ function processCommand(cmd) {
       const choice = options[randomIndex];
       const exploreDiv = document.createElement('div');
       exploreDiv.id = 'explore-output';
-      applyRainbowText(exploreDiv, `Navigating to ${choice.name}...`);
+      if (terminal.style.color === '#fff') {
+        applyRainbowText(exploreDiv, `Navigating to ${choice.name}...`);
+      } else {
+        exploreDiv.textContent = `Navigating to ${choice.name}...`;
+      }
       output.appendChild(exploreDiv);
       terminal.scrollTop = terminal.scrollHeight;
       setTimeout(() => {
         const tabDiv = document.createElement('div');
-        applyRainbowText(tabDiv, "Opening a new tab, don’t worry terminal is still here, come back and hang out!");
+        if (terminal.style.color === '#fff') {
+          applyRainbowText(tabDiv, "Opening a new tab, don’t worry terminal is still here, come back and hang out!");
+        } else {
+          tabDiv.textContent = "Opening a new tab, don’t worry terminal is still here, come back and hang out!";
+        }
         output.appendChild(tabDiv);
         window.open(choice.url, '_blank');
         if (terminal.style.color === '#fff') {
@@ -243,29 +259,51 @@ function processCommand(cmd) {
       response = 'Choose a game: game brickout, game tetris, game joshua';
       break;
     case 'game joshua':
-      output.innerHTML += '<div id="wargames-output">Shall we play a game?</div>';
+      output.innerHTML += '<div id="wargames-output"></div>';
+      const wargamesOutput = document.getElementById('wargames-output');
+      if (terminal.style.color === '#fff') {
+        applyRainbowText(wargamesOutput, 'Shall we play a game?');
+      } else {
+        wargamesOutput.textContent = 'Shall we play a game?';
+      }
       terminal.scrollTop = terminal.scrollHeight;
       setTimeout(() => {
         const launchDiv = document.createElement('div');
-        applyRainbowText(launchDiv, 'Simulating Global Thermonuclear War...');
+        if (terminal.style.color === '#fff') {
+          applyRainbowText(launchDiv, 'Simulating Global Thermonuclear War...');
+        } else {
+          launchDiv.textContent = 'Simulating Global Thermonuclear War...';
+        }
         output.appendChild(launchDiv);
         terminal.scrollTop = terminal.scrollHeight;
         let countdown = 5;
         const countdownInterval = setInterval(() => {
           const countDiv = document.createElement('div');
-          applyRainbowText(countDiv, `Launch in ${countdown}...`);
+          if (terminal.style.color === '#fff') {
+            applyRainbowText(countDiv, `Launch in ${countdown}...`);
+          } else {
+            countDiv.textContent = `Launch in ${countdown}...`;
+          }
           output.appendChild(countDiv);
           terminal.scrollTop = terminal.scrollHeight;
           countdown--;
           if (countdown < 0) {
             clearInterval(countdownInterval);
             const endDiv = document.createElement('div');
-            applyRainbowText(endDiv, 'A strange game. The only winning move is not to play.');
+            if (terminal.style.color === '#fff') {
+              applyRainbowText(endDiv, 'A strange game. The only winning move is not to play.');
+            } else {
+              endDiv.textContent = 'A strange game. The only winning move is not to play.';
+            }
             output.appendChild(endDiv);
             terminal.scrollTop = terminal.scrollHeight;
             setTimeout(() => {
               const chessDiv = document.createElement('div');
-              applyRainbowText(chessDiv, 'How about a nice game of chess?');
+              if (terminal.style.color === '#fff') {
+                applyRainbowText(chessDiv, 'How about a nice game of chess?');
+              } else {
+                chessDiv.textContent = 'How about a nice game of chess?';
+              }
               output.appendChild(chessDiv);
               terminal.scrollTop = terminal.scrollHeight;
             }, 1000);
