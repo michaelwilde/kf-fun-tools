@@ -36,20 +36,39 @@ function updateCursorPosition() {
   cursor.style.left = `${textLength * charWidth}px`;
 }
 
+function applyRainbowText(element, text) {
+  element.innerHTML = '';
+  for (let i = 0; i < text.length; i++) {
+    const span = document.createElement('span');
+    span.textContent = text[i];
+    span.style.color = roybgivColors[i % 7];
+    element.appendChild(span);
+  }
+}
+
 function applyPrideTheme() {
   terminal.style.background = '#000';
   terminal.style.color = '#fff'; // Base color, overridden by ROYGBIV
-  header.style.color = roybgivColors[0]; // Header gets Red
-  prompt.style.color = roybgivColors[1]; // Prompt gets Orange
-  input.style.color = roybgivColors[2]; // Input gets Yellow
-  cursor.style.background = roybgivColors[3]; // Cursor gets Green
+  applyRainbowText(header.querySelector('a'), 'Kloudfuse OS Version 3.3');
+  applyRainbowText(prompt, isHacked ? 'root@kloudfuse> ' : 'kloudfuse> ');
+  input.style.color = '#fff'; // Base for input, overridden below
+  applyRainbowText(input, input.value); // Initial input text
+  cursor.style.background = roybgivColors[0]; // Cursor starts at Red
   canvas.style.borderColor = '#fff';
 
   const outputLines = output.querySelectorAll('div');
-  outputLines.forEach((line, index) => {
-    line.style.color = roybgivColors[(index + 4) % 7]; // Start at Blue for responses
+  outputLines.forEach((line) => {
+    const text = line.textContent;
+    line.innerHTML = '';
+    applyRainbowText(line, text);
   });
 }
+
+input.addEventListener('input', () => {
+  if (terminal.style.color === '#fff') { // If in pride mode
+    applyRainbowText(input, input.value);
+  }
+});
 
 function processCommand(cmd) {
   let response = '';
@@ -71,15 +90,17 @@ function processCommand(cmd) {
       let dots = 0;
       const hackInterval = setInterval(() => {
         dots++;
-        document.getElementById('hack-output').innerText = 'Hacking initiated.' + '.'.repeat(dots);
+        const hackText = 'Hacking initiated.' + '.'.repeat(dots);
+        const hackOutput = document.getElementById('hack-output');
+        hackOutput.innerHTML = '';
+        applyRainbowText(hackOutput, hackText);
         terminal.scrollTop = terminal.scrollHeight;
-        if (terminal.style.color === '#fff') {
-          document.getElementById('hack-output').style.color = roybgivColors[(dots + 3) % 7];
-        }
       }, 300);
       setTimeout(() => {
         clearInterval(hackInterval);
-        output.innerHTML += '<div>ACCESS GRANTED</div>';
+        const grantedDiv = document.createElement('div');
+        applyRainbowText(grantedDiv, 'ACCESS GRANTED');
+        output.appendChild(grantedDiv);
         prompt.innerText = 'root@kloudfuse> ';
         isHacked = true;
         if (terminal.style.color === '#fff') {
@@ -121,13 +142,18 @@ function processCommand(cmd) {
       ];
       const randomIndex = Math.floor(Math.random() * options.length);
       const choice = options[randomIndex];
-      output.innerHTML += `<div id="explore-output">Navigating to ${choice.name}...</div>`;
+      const exploreDiv = document.createElement('div');
+      exploreDiv.id = 'explore-output';
+      applyRainbowText(exploreDiv, `Navigating to ${choice.name}...`);
+      output.appendChild(exploreDiv);
       terminal.scrollTop = terminal.scrollHeight;
       setTimeout(() => {
-        output.innerHTML += "<div>Opening a new tab, don’t worry terminal is still here, come back and hang out!</div>";
+        const tabDiv = document.createElement('div');
+        applyRainbowText(tabDiv, "Opening a new tab, don’t worry terminal is still here, come back and hang out!");
+        output.appendChild(tabDiv);
         window.open(choice.url, '_blank');
         if (terminal.style.color === '#fff') {
-          applyPrideTheme();
+          applyPrideTheme(); // Reapply for cursor/input consistency
         }
         terminal.scrollTop = terminal.scrollHeight;
       }, 2000);
@@ -136,39 +162,51 @@ function processCommand(cmd) {
       terminal.style.background = '#000';
       terminal.style.color = '#0f0';
       header.style.color = '#0f0';
+      header.querySelector('a').style.color = '#0f0';
       prompt.style.color = '#0f0';
       input.style.color = '#0f0';
       cursor.style.background = '#0f0';
       canvas.style.borderColor = '#0f0';
       output.style.color = '#0f0';
       const outputLinesDark = output.querySelectorAll('div');
-      outputLinesDark.forEach(line => line.style.color = '#0f0');
+      outputLinesDark.forEach(line => {
+        line.innerHTML = line.textContent; // Remove spans
+        line.style.color = '#0f0';
+      });
       response = 'Theme set to dark.';
       break;
     case 'theme light':
       terminal.style.background = '#fff';
       terminal.style.color = '#4B0082';
       header.style.color = '#4B0082';
+      header.querySelector('a').style.color = '#4B0082';
       prompt.style.color = '#4B0082';
       input.style.color = '#4B0082';
       cursor.style.background = '#4B0082';
       canvas.style.borderColor = '#4B0082';
       output.style.color = '#4B0082';
       const outputLinesLight = output.querySelectorAll('div');
-      outputLinesLight.forEach(line => line.style.color = '#4B0082');
+      outputLinesLight.forEach(line => {
+        line.innerHTML = line.textContent;
+        line.style.color = '#4B0082';
+      });
       response = 'Theme set to light.';
       break;
     case 'theme neon':
       terminal.style.background = '#000';
       terminal.style.color = '#ff0';
       header.style.color = '#ff0';
+      header.querySelector('a').style.color = '#ff0';
       prompt.style.color = '#ff0';
       input.style.color = '#ff0';
       cursor.style.background = '#ff0';
       canvas.style.borderColor = '#ff0';
       output.style.color = '#ff0';
       const outputLinesNeon = output.querySelectorAll('div');
-      outputLinesNeon.forEach(line => line.style.color = '#ff0');
+      outputLinesNeon.forEach(line => {
+        line.innerHTML = line.textContent;
+        line.style.color = '#ff0';
+      });
       response = 'Theme set to neon.';
       break;
     case 'theme pride':
@@ -189,6 +227,7 @@ function processCommand(cmd) {
         prompt.innerText = 'kloudfuse> ';
         isHacked = false;
         response = 'Logged out of root access.';
+        if (terminal.style.color === '#fff') applyPrideTheme(); // Reapply for prompt
       } else {
         response = 'Not in root mode.';
       }
@@ -206,14 +245,12 @@ function processCommand(cmd) {
       response = `Command not found: ${cmd}. Type 'help' for options.`;
   }
   const responseDiv = document.createElement('div');
-  responseDiv.innerHTML = response.replace('\n', '<br>');
-  output.appendChild(responseDiv);
   if (terminal.style.color === '#fff') {
-    const outputLines = output.querySelectorAll('div');
-    outputLines.forEach((line, index) => {
-      line.style.color = roybgivColors[(index + 4) % 7];
-    });
+    applyRainbowText(responseDiv, response.replace('\n', '<br>'));
+  } else {
+    responseDiv.innerHTML = response.replace('\n', '<br>');
   }
+  output.appendChild(responseDiv);
   terminal.scrollTop = terminal.scrollHeight;
 }
 
@@ -221,7 +258,8 @@ function processCommand(cmd) {
 function startBrickoutGame() {
   output.innerHTML = '<div>Starting Brickout... Use ← and → keys to move the paddle! Esc or Ctrl-C to exit.</div>';
   if (terminal.style.color === '#fff') {
-    applyPrideTheme();
+    const brickoutDiv = output.lastChild;
+    applyRainbowText(brickoutDiv, brickoutDiv.textContent);
   }
   canvas.style.display = 'block';
   input.disabled = true;
@@ -335,7 +373,10 @@ function startBrickoutGame() {
         ball.y = paddle.y - ball.radius;
       } else if (ball.y + ball.dy > HEIGHT - ball.radius) {
         output.innerHTML += '<div>Game Over! Type anything to continue.</div>';
-        if (terminal.style.color === '#fff') applyPrideTheme();
+        if (terminal.style.color === '#fff') {
+          const gameOverDiv = output.lastChild;
+          applyRainbowText(gameOverDiv, gameOverDiv.textContent);
+        }
         endGame();
         return;
       }
@@ -364,7 +405,10 @@ function startBrickoutGame() {
 // Tetris Game
 function startTetrisGame() {
   output.innerHTML = '<div>Starting Tetris... Use ← → to move, ↑ to rotate, ↓ to drop! Esc or Ctrl-C to exit.</div>';
-  if (terminal.style.color === '#fff') applyPrideTheme();
+  if (terminal.style.color === '#fff') {
+    const tetrisDiv = output.lastChild;
+    applyRainbowText(tetrisDiv, tetrisDiv.textContent);
+  }
   canvas.style.display = 'block';
   input.disabled = true;
 
@@ -544,7 +588,10 @@ function startTetrisGame() {
           setTimeout(() => {
             endGame();
             output.innerHTML = '<div>Game Over! Type anything to continue.</div>';
-            if (terminal.style.color === '#fff') applyPrideTheme();
+            if (terminal.style.color === '#fff') {
+              const gameOverDiv = output.lastChild;
+              applyRainbowText(gameOverDiv, gameOverDiv.textContent);
+            }
           }, 1000);
           return;
         }
