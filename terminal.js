@@ -48,12 +48,12 @@ function applyRainbowText(element, text) {
 
 function applyPrideTheme() {
   terminal.style.background = '#000';
-  terminal.style.color = '#fff'; // Base color, overridden by ROYGBIV
+  terminal.style.color = '#fff';
   applyRainbowText(header.querySelector('a'), 'Kloudfuse OS Version 3.3');
   applyRainbowText(prompt, isHacked ? 'root@kloudfuse> ' : 'kloudfuse> ');
-  input.style.color = '#fff'; // Base for input, overridden below
-  applyRainbowText(input, input.value); // Initial input text
-  cursor.style.background = roybgivColors[0]; // Cursor starts at Red
+  input.style.color = '#fff';
+  applyRainbowText(input, input.value);
+  cursor.style.background = roybgivColors[0];
   canvas.style.borderColor = '#fff';
 
   const outputLines = output.querySelectorAll('div');
@@ -65,7 +65,7 @@ function applyPrideTheme() {
 }
 
 input.addEventListener('input', () => {
-  if (terminal.style.color === '#fff') { // If in pride mode
+  if (terminal.style.color === '#fff') {
     applyRainbowText(input, input.value);
   }
 });
@@ -75,7 +75,7 @@ function processCommand(cmd) {
   switch (cmd) {
     case 'help':
     case 'man kloudfuse':
-      response = 'Commands: whoami, about, hack, joke, explore, theme [dark/light/neon/pride], clear, game' + (isHacked ? ', exit' : '');
+      response = 'Commands: whoami, about, hack, joke, explore, theme [dark/light/neon/pride], clear, game, joshua' + (isHacked ? ', exit' : '');
       break;
     case '?':
     case 'about':
@@ -153,7 +153,7 @@ function processCommand(cmd) {
         output.appendChild(tabDiv);
         window.open(choice.url, '_blank');
         if (terminal.style.color === '#fff') {
-          applyPrideTheme(); // Reapply for cursor/input consistency
+          applyPrideTheme();
         }
         terminal.scrollTop = terminal.scrollHeight;
       }, 2000);
@@ -170,7 +170,7 @@ function processCommand(cmd) {
       output.style.color = '#0f0';
       const outputLinesDark = output.querySelectorAll('div');
       outputLinesDark.forEach(line => {
-        line.innerHTML = line.textContent; // Remove spans
+        line.innerHTML = line.textContent;
         line.style.color = '#0f0';
       });
       response = 'Theme set to dark.';
@@ -227,7 +227,7 @@ function processCommand(cmd) {
         prompt.innerText = 'kloudfuse> ';
         isHacked = false;
         response = 'Logged out of root access.';
-        if (terminal.style.color === '#fff') applyPrideTheme(); // Reapply for prompt
+        if (terminal.style.color === '#fff') applyPrideTheme();
       } else {
         response = 'Not in root mode.';
       }
@@ -241,6 +241,37 @@ function processCommand(cmd) {
     case 'game':
       response = 'Choose a game: game brickout, game tetris';
       break;
+    case 'globalthermonuclearwar':
+      output.innerHTML += '<div id="wargames-output">Shall we play a game?</div>';
+      terminal.scrollTop = terminal.scrollHeight;
+      setTimeout(() => {
+        const launchDiv = document.createElement('div');
+        applyRainbowText(launchDiv, 'Simulating Global Thermonuclear War...');
+        output.appendChild(launchDiv);
+        terminal.scrollTop = terminal.scrollHeight;
+        let countdown = 5;
+        const countdownInterval = setInterval(() => {
+          const countDiv = document.createElement('div');
+          applyRainbowText(countDiv, `Launch in ${countdown}...`);
+          output.appendChild(countDiv);
+          terminal.scrollTop = terminal.scrollHeight;
+          countdown--;
+          if (countdown < 0) {
+            clearInterval(countdownInterval);
+            const endDiv = document.createElement('div');
+            applyRainbowText(endDiv, 'A strange game. The only winning move is not to play.');
+            output.appendChild(endDiv);
+            terminal.scrollTop = terminal.scrollHeight;
+            setTimeout(() => {
+              const chessDiv = document.createElement('div');
+              applyRainbowText(chessDiv, 'How about a nice game of chess?');
+              output.appendChild(chessDiv);
+              terminal.scrollTop = terminal.scrollHeight;
+            }, 1000);
+          }
+        }, 500);
+      }, 1000);
+      return;
     default:
       response = `Command not found: ${cmd}. Type 'help' for options.`;
   }
@@ -494,125 +525,4 @@ function startTetrisGame() {
     ctx.fillStyle = '#0f0';
     ctx.font = 'bold 30px Roboto Mono';
     ctx.textAlign = 'center';
-    ctx.fillText('GAME OVER', WIDTH / 2, HEIGHT / 2 + 10);
-  }
-
-  function collide(x, y, shape) {
-    for (let r = 0; r < shape.length; r++) {
-      for (let c = 0; c < shape[r].length; c++) {
-        if (shape[r][c]) {
-          const newX = x + c;
-          const newY = y + r;
-          if (newX < 0 || newX >= cols || newY >= rows || (newY >= 0 && board[newY][newX])) {
-            return true;
-          }
-        }
-      }
-    }
-    return false;
-  }
-
-  function merge() {
-    for (let r = 0; r < currentShape.length; r++) {
-      for (let c = 0; c < currentShape[r].length; c++) {
-        if (currentShape[r][c] && currentY + r >= 0) {
-          board[currentY + r][currentX + c] = colors[shapes.indexOf(shapes.find(s => s.toString() === currentShape.toString()))];
-        }
-      }
-    }
-  }
-
-  function clearLines() {
-    for (let r = rows - 1; r >= 0; r--) {
-      if (board[r].every(cell => cell)) {
-        board.splice(r, 1);
-        board.unshift(Array(cols).fill(0));
-      }
-    }
-  }
-
-  function rotateShape() {
-    const rotated = currentShape[0].map((_, index) => currentShape.map(row => row[index]).reverse());
-    if (!collide(currentX, currentY, rotated)) {
-      currentShape = rotated;
-    }
-  }
-
-  let dropCounter = 0;
-  const dropInterval = 30;
-
-  document.addEventListener('keydown', keyDownHandler);
-  document.addEventListener('keyup', keyUpHandler);
-
-  let leftPressed = false;
-  let rightPressed = false;
-  let downPressed = false;
-  function keyDownHandler(e) {
-    if (e.key === 'ArrowLeft') leftPressed = true;
-    else if (e.key === 'ArrowRight') rightPressed = true;
-    else if (e.key === 'ArrowDown') downPressed = true;
-    else if (e.key === 'ArrowUp' && !e.repeat) rotateShape();
-    if (e.key === 'Escape' || (e.ctrlKey && e.key === 'c')) {
-      drawGameOverModal();
-      setTimeout(() => {
-        endGame();
-        output.innerHTML = '';
-      }, 1000);
-    }
-  }
-  function keyUpHandler(e) {
-    if (e.key === 'ArrowLeft') leftPressed = false;
-    else if (e.key === 'ArrowRight') rightPressed = false;
-    else if (e.key === 'ArrowDown') downPressed = false;
-  }
-
-  function draw() {
-    ctx.clearRect(0, 0, WIDTH, HEIGHT);
-    drawBackgroundAndLogo();
-    drawBoard();
-    drawShape();
-
-    dropCounter++;
-    if (dropCounter >= dropInterval || downPressed) {
-      if (!collide(currentX, currentY + 1, currentShape)) {
-        currentY++;
-      } else if (currentY < 0) {
-      } else {
-        merge();
-        clearLines();
-        currentShape = randomShape();
-        currentX = Math.floor(cols / 2) - Math.floor(currentShape[0].length / 2);
-        currentY = -currentShape.length;
-        if (collide(currentX, currentY, currentShape)) {
-          drawGameOverModal();
-          setTimeout(() => {
-            endGame();
-            output.innerHTML = '<div>Game Over! Type anything to continue.</div>';
-            if (terminal.style.color === '#fff') {
-              const gameOverDiv = output.lastChild;
-              applyRainbowText(gameOverDiv, gameOverDiv.textContent);
-            }
-          }, 1000);
-          return;
-        }
-      }
-      dropCounter = 0;
-    }
-
-    if (leftPressed && !collide(currentX - 1, currentY, currentShape)) currentX--;
-    if (rightPressed && !collide(currentX + 1, currentY, currentShape)) currentX++;
-
-    requestAnimationFrame(draw);
-  }
-
-  function endGame() {
-    canvas.style.display = 'none';
-    input.disabled = false;
-    input.focus();
-    ctx.clearRect(0, 0, WIDTH, HEIGHT);
-    document.removeEventListener('keydown', keyDownHandler);
-    document.removeEventListener('keyup', keyUpHandler);
-  }
-
-  draw();
-}
+    ctx.fillText('GAME OVER', WIDTH / 2, HEIGHT 
