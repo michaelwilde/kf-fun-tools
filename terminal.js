@@ -83,7 +83,7 @@ function processCommand(cmd) {
   switch (command) {
     case 'help':
     case 'man':
-      response = 'Commands: whoami, about, hack, joke, explore [platform/playground/customers/people/blogs/videos], theme [dark/light/neon/pride], clear, game' + (isHacked ? ', exit' : '');
+      response = 'Commands: whoami, about, hack, joke, explore, theme, clear, game' + (isHacked ? ', exit' : '');
       break;
     case '?':
     case 'about':
