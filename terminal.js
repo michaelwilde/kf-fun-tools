@@ -20,6 +20,17 @@ const roybgivColors = [
   '#FF99FF'  // Light Violet
 ];
 
+// Auto-trigger help after 30 seconds
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    const autoMessageDiv = document.createElement('div');
+    autoMessageDiv.textContent = "ok, i'll help. lets ask for help";
+    output.appendChild(autoMessageDiv);
+    terminal.scrollTop = terminal.scrollHeight;
+    processCommand('help'); // Run help command silently
+  }, 30000); // 30 seconds
+});
+
 input.addEventListener('keydown', (e) => {
   if (e.key === 'Enter') {
     const command = input.value.trim().toLowerCase();
@@ -66,10 +77,13 @@ function applyPrideTheme() {
 
 function processCommand(cmd) {
   let response = '';
-  switch (cmd) {
+  // Split command into parts for arguments
+  const [command, arg] = cmd.split(' ');
+
+  switch (command) {
     case 'help':
-    case 'man kloudfuse':
-      response = 'Commands: whoami, about, hack, joke, explore, theme [dark/light/neon/pride], clear, game' + (isHacked ? ', exit' : '');
+    case 'man':
+      response = 'Commands: whoami, about, hack, joke, explore [platform/playground/customers/people/blogs/videos], theme [dark/light/neon/pride], clear, game' + (isHacked ? ', exit' : '');
       break;
     case '?':
     case 'about':
@@ -137,100 +151,116 @@ function processCommand(cmd) {
       response = jokes[Math.floor(Math.random() * jokes.length)];
       break;
     case 'explore':
-      const options = [
-        { name: 'Platform', url: 'https://www.kloudfuse.com/capabilities/unified-observability-platform' },
-        { name: 'Playground', url: 'https://playground.kloudfuse.io' },
-        { name: 'Pricing', url: 'https://kloudfuse.com/pricing' }
-      ];
-      const randomIndex = Math.floor(Math.random() * options.length);
-      const choice = options[randomIndex];
-      const exploreDiv = document.createElement('div');
-      exploreDiv.id = 'explore-output';
-      if (terminal.style.color === '#fff') {
-        applyRainbowText(exploreDiv, `Navigating to ${choice.name}...`);
-      } else {
-        exploreDiv.textContent = `Navigating to ${choice.name}...`;
-      }
-      output.appendChild(exploreDiv);
-      terminal.scrollTop = terminal.scrollHeight;
-      setTimeout(() => {
-        const tabDiv = document.createElement('div');
+      const exploreOptions = {
+        'platform': { name: 'Platform', url: 'https://www.kloudfuse.com/capabilities/unified-observability-platform' },
+        'playground': { name: 'Playground', url: 'https://playground.kloudfuse.io' },
+        'customers': { name: 'Customers', url: 'https://www.kloudfuse.com/customers' },
+        'people': { name: 'People', url: 'https://www.kloudfuse.com/company' },
+        'blogs': { name: 'Blogs', url: 'https://www.kloudfuse.com/blog' },
+        'videos': { name: 'Videos', url: 'https://youtube.com/@kloudfuse/videos' }
+      };
+      if (arg && exploreOptions[arg]) {
+        const choice = exploreOptions[arg];
+        const exploreDiv = document.createElement('div');
+        exploreDiv.id = 'explore-output';
         if (terminal.style.color === '#fff') {
-          applyRainbowText(tabDiv, "Opening a new tab, don’t worry terminal is still here, come back and hang out!");
+          applyRainbowText(exploreDiv, `Navigating to ${choice.name}...`);
         } else {
-          tabDiv.textContent = "Opening a new tab, don’t worry terminal is still here, come back and hang out!";
+          exploreDiv.textContent = `Navigating to ${choice.name}...`;
         }
-        output.appendChild(tabDiv);
-        window.open(choice.url, '_blank');
-        if (terminal.style.color === '#fff') {
-          applyPrideTheme();
-        }
+        output.appendChild(exploreDiv);
         terminal.scrollTop = terminal.scrollHeight;
-      }, 2000);
-      return;
-    case 'theme dark':
-      terminal.style.background = '#000';
-      terminal.style.color = '#0f0';
-      header.style.color = '#0f0';
-      header.querySelector('a').innerHTML = 'Kloudfuse OS Version 3.3';
-      header.querySelector('a').style.color = '#0f0';
-      prompt.innerHTML = isHacked ? 'root@kloudfuse> ' : 'kloudfuse> ';
-      prompt.style.color = '#0f0';
-      input.style.color = '#0f0';
-      cursor.style.background = '#0f0';
-      canvas.style.borderColor = '#0f0';
-      output.style.color = '#0f0';
-      const outputLinesDark = output.querySelectorAll('div');
-      outputLinesDark.forEach(line => {
-        line.innerHTML = line.textContent;
-        line.style.color = '#0f0';
-      });
-      response = 'Theme set to dark.';
+        setTimeout(() => {
+          const tabDiv = document.createElement('div');
+          if (terminal.style.color === '#fff') {
+            applyRainbowText(tabDiv, "Opening a new tab, don’t worry terminal is still here, come back and hang out!");
+          } else {
+            tabDiv.textContent = "Opening a new tab, don’t worry terminal is still here, come back and hang out!";
+          }
+          output.appendChild(tabDiv);
+          window.open(choice.url, '_blank');
+          if (terminal.style.color === '#fff') {
+            applyPrideTheme();
+          }
+          terminal.scrollTop = terminal.scrollHeight;
+        }, 2000);
+      } else {
+        response = 'Usage: explore [platform/playground/customers/people/blogs/videos]';
+      }
       break;
-    case 'theme light':
-      terminal.style.background = '#fff';
-      terminal.style.color = '#4B0082';
-      header.style.color = '#4B0082';
-      header.querySelector('a').innerHTML = 'Kloudfuse OS Version 3.3';
-      header.querySelector('a').style.color = '#4B0082';
-      prompt.innerHTML = isHacked ? 'root@kloudfuse> ' : 'kloudfuse> ';
-      prompt.style.color = '#4B0082';
-      input.style.color = '#4B0082';
-      cursor.style.background = '#4B0082';
-      canvas.style.borderColor = '#4B0082';
-      output.style.color = '#4B0082';
-      const outputLinesLight = output.querySelectorAll('div');
-      outputLinesLight.forEach(line => {
-        line.innerHTML = line.textContent;
-        line.style.color = '#4B0082';
-      });
-      response = 'Theme set to light.';
+    case 'theme':
+      switch (arg) {
+        case 'dark':
+          terminal.style.background = '#000';
+          terminal.style.color = '#0f0';
+          header.style.color = '#0f0';
+          header.querySelector('a').innerHTML = 'Kloudfuse OS Version 3.3';
+          header.querySelector('a').style.color = '#0f0';
+          prompt.innerHTML = isHacked ? 'root@kloudfuse> ' : 'kloudfuse> ';
+          prompt.style.color = '#0f0';
+          input.style.color = '#0f0';
+          cursor.style.background = '#0f0';
+          canvas.style.borderColor = '#0f0';
+          output.style.color = '#0f0';
+          const outputLinesDark = output.querySelectorAll('div');
+          outputLinesDark.forEach(line => {
+            line.innerHTML = line.textContent;
+            line.style.color = '#0f0';
+          });
+          response = 'Theme set to dark.';
+          break;
+        case 'light':
+          terminal.style.background = '#fff';
+          terminal.style.color = '#4B0082';
+          header.style.color = '#4B0082';
+          header.querySelector('a').innerHTML = 'Kloudfuse OS Version 3.3';
+          header.querySelector('a').style.color = '#4B0082';
+          prompt.innerHTML = isHacked ? 'root@kloudfuse> ' : 'kloudfuse> ';
+          prompt.style.color = '#4B0082';
+          input.style.color = '#4B0082';
+          cursor.style.background = '#4B0082';
+          canvas.style.borderColor = '#4B0082';
+          output.style.color = '#4B0082';
+          const outputLinesLight = output.querySelectorAll('div');
+          outputLinesLight.forEach(line => {
+            line.innerHTML = line.textContent;
+            line.style.color = '#4B0082';
+          });
+          response = 'Theme set to light.';
+          break;
+        case 'neon':
+          terminal.style.background = '#000';
+          terminal.style.color = '#ff0';
+          header.style.color = '#ff0';
+          header.querySelector('a').innerHTML = 'Kloudfuse OS Version 3.3';
+          header.querySelector('a').style.color = '#ff0';
+          prompt.innerHTML = isHacked ? 'root@kloudfuse> ' : 'kloudfuse> ';
+          prompt.style.color = '#ff0';
+          input.style.color = '#ff0';
+          cursor.style.background = '#ff0';
+          canvas.style.borderColor = '#ff0';
+          output.style.color = '#ff0';
+          const outputLinesNeon = output.querySelectorAll('div');
+          outputLinesNeon.forEach(line => {
+            line.innerHTML = line.textContent;
+            line.style.color = '#ff0';
+          });
+          response = 'Theme set to neon.';
+          break;
+        case 'pride':
+          applyPrideTheme();
+          response = 'Theme set to pride. 🌈';
+          break;
+        default:
+          response = 'Usage: theme [dark/light/neon/pride]';
+      }
       break;
-    case 'theme neon':
-      terminal.style.background = '#000';
-      terminal.style.color = '#ff0';
-      header.style.color = '#ff0';
-      header.querySelector('a').innerHTML = 'Kloudfuse OS Version 3.3';
-      header.querySelector('a').style.color = '#ff0';
-      prompt.innerHTML = isHacked ? 'root@kloudfuse> ' : 'kloudfuse> ';
-      prompt.style.color = '#ff0';
-      input.style.color = '#ff0';
-      cursor.style.background = '#ff0';
-      canvas.style.borderColor = '#ff0';
-      output.style.color = '#ff0';
-      const outputLinesNeon = output.querySelectorAll('div');
-      outputLinesNeon.forEach(line => {
-        line.innerHTML = line.textContent;
-        line.style.color = '#ff0';
-      });
-      response = 'Theme set to neon.';
-      break;
-    case 'theme pride':
-      applyPrideTheme();
-      response = 'Theme set to pride. 🌈';
-      break;
-    case 'sudo rm -rf /':
-      response = 'Nice try, but I’m not THAT Linux.';
+    case 'sudo':
+      if (cmd === 'sudo rm -rf /') {
+        response = 'Nice try, but I’m not THAT Linux.';
+      } else {
+        response = `Command not found: ${cmd}. Type 'help' for options.`;
+      }
       break;
     case '42':
       response = 'The answer to life, the universe, and everything.';
@@ -249,68 +279,75 @@ function processCommand(cmd) {
         response = 'Not in root mode.';
       }
       break;
-    case 'game brickout':
-      startBrickoutGame();
-      return;
-    case 'game tetris':
-      startTetrisGame();
-      return;
     case 'game':
-      response = 'Choose a game: game brickout, game tetris, game joshua';
-      break;
-    case 'game joshua':
-      output.innerHTML += '<div id="wargames-output"></div>';
-      const wargamesOutput = document.getElementById('wargames-output');
-      if (terminal.style.color === '#fff') {
-        applyRainbowText(wargamesOutput, 'Shall we play a game?');
+      if (!arg) {
+        response = 'Choose a game: game brickout, game tetris, game joshua';
       } else {
-        wargamesOutput.textContent = 'Shall we play a game?';
-      }
-      terminal.scrollTop = terminal.scrollHeight;
-      setTimeout(() => {
-        const launchDiv = document.createElement('div');
-        if (terminal.style.color === '#fff') {
-          applyRainbowText(launchDiv, 'Simulating Global Thermonuclear War...');
-        } else {
-          launchDiv.textContent = 'Simulating Global Thermonuclear War...';
-        }
-        output.appendChild(launchDiv);
-        terminal.scrollTop = terminal.scrollHeight;
-        let countdown = 5;
-        const countdownInterval = setInterval(() => {
-          const countDiv = document.createElement('div');
-          if (terminal.style.color === '#fff') {
-            applyRainbowText(countDiv, `Launch in ${countdown}...`);
-          } else {
-            countDiv.textContent = `Launch in ${countdown}...`;
-          }
-          output.appendChild(countDiv);
-          terminal.scrollTop = terminal.scrollHeight;
-          countdown--;
-          if (countdown < 0) {
-            clearInterval(countdownInterval);
-            const endDiv = document.createElement('div');
+        switch (arg) {
+          case 'brickout':
+            startBrickoutGame();
+            return;
+          case 'tetris':
+            startTetrisGame();
+            return;
+          case 'joshua':
+            output.innerHTML += '<div id="wargames-output"></div>';
+            const wargamesOutput = document.getElementById('wargames-output');
             if (terminal.style.color === '#fff') {
-              applyRainbowText(endDiv, 'A strange game. The only winning move is not to play.');
+              applyRainbowText(wargamesOutput, 'Shall we play a game?');
             } else {
-              endDiv.textContent = 'A strange game. The only winning move is not to play.';
+              wargamesOutput.textContent = 'Shall we play a game?';
             }
-            output.appendChild(endDiv);
             terminal.scrollTop = terminal.scrollHeight;
             setTimeout(() => {
-              const chessDiv = document.createElement('div');
+              const launchDiv = document.createElement('div');
               if (terminal.style.color === '#fff') {
-                applyRainbowText(chessDiv, 'How about a nice game of chess?');
+                applyRainbowText(launchDiv, 'Simulating Global Thermonuclear War...');
               } else {
-                chessDiv.textContent = 'How about a nice game of chess?';
+                launchDiv.textContent = 'Simulating Global Thermonuclear War...';
               }
-              output.appendChild(chessDiv);
+              output.appendChild(launchDiv);
               terminal.scrollTop = terminal.scrollHeight;
+              let countdown = 5;
+              const countdownInterval = setInterval(() => {
+                const countDiv = document.createElement('div');
+                if (terminal.style.color === '#fff') {
+                  applyRainbowText(countDiv, `Launch in ${countdown}...`);
+                } else {
+                  countDiv.textContent = `Launch in ${countdown}...`;
+                }
+                output.appendChild(countDiv);
+                terminal.scrollTop = terminal.scrollHeight;
+                countdown--;
+                if (countdown < 0) {
+                  clearInterval(countdownInterval);
+                  const endDiv = document.createElement('div');
+                  if (terminal.style.color === '#fff') {
+                    applyRainbowText(endDiv, 'A strange game. The only winning move is not to play.');
+                  } else {
+                    endDiv.textContent = 'A strange game. The only winning move is not to play.';
+                  }
+                  output.appendChild(endDiv);
+                  terminal.scrollTop = terminal.scrollHeight;
+                  setTimeout(() => {
+                    const chessDiv = document.createElement('div');
+                    if (terminal.style.color === '#fff') {
+                      applyRainbowText(chessDiv, 'How about a nice game of chess?');
+                    } else {
+                      chessDiv.textContent = 'How about a nice game of chess?';
+                    }
+                    output.appendChild(chessDiv);
+                    terminal.scrollTop = terminal.scrollHeight;
+                  }, 1000);
+                }
+              }, 500);
             }, 1000);
-          }
-        }, 500);
-      }, 1000);
-      return;
+            return;
+          default:
+            response = `Unknown game: ${arg}. Choose: game brickout, game tetris, game joshua`;
+        }
+      }
+      break;
     default:
       response = `Command not found: ${cmd}. Type 'help' for options.`;
   }
