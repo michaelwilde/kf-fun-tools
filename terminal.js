@@ -27,7 +27,7 @@ window.addEventListener('load', () => {
     autoMessageDiv.textContent = "ok, i'll help. lets ask for help";
     output.appendChild(autoMessageDiv);
     terminal.scrollTop = terminal.scrollHeight;
-    processCommand('help'); // Run help command silently
+    processCommand('help');
   }, 30000); // 30 seconds
 });
 
@@ -77,13 +77,12 @@ function applyPrideTheme() {
 
 function processCommand(cmd) {
   let response = '';
-  // Split command into parts for arguments
   const [command, arg] = cmd.split(' ');
 
   switch (command) {
     case 'help':
     case 'man':
-      response = 'Commands: whoami, about, hack, joke, explore, theme, clear, game' + (isHacked ? ', exit' : '');
+      response = 'Commands: whoami, about, hack, joke, explore [platform/playground/customers/people/blogs/videos], theme [dark/light/neon/pride], clear, game' + (isHacked ? ', exit' : '');
       break;
     case '?':
     case 'about':
@@ -281,7 +280,7 @@ function processCommand(cmd) {
       break;
     case 'game':
       if (!arg) {
-        response = 'Choose a game: game brickout, game tetris, game joshua';
+        response = 'Choose a game: game brickout, game tetris, game joshua, game mdr';
       } else {
         switch (arg) {
           case 'brickout':
@@ -343,8 +342,11 @@ function processCommand(cmd) {
               }, 500);
             }, 1000);
             return;
+          case 'mdr':
+            startMDRGame();
+            return;
           default:
-            response = `Unknown game: ${arg}. Choose: game brickout, game tetris, game joshua`;
+            response = `Unknown game: ${arg}. Choose: game brickout, game tetris, game joshua, game mdr`;
         }
       }
       break;
@@ -717,6 +719,179 @@ function startTetrisGame() {
     input.disabled = false;
     input.focus();
     ctx.clearRect(0, 0, WIDTH, HEIGHT);
+    document.removeEventListener('keydown', keyDownHandler);
+    document.removeEventListener('keyup', keyUpHandler);
+  }
+
+  draw();
+}
+
+// Macrodata Refinement (MDR) Game
+function startMDRGame() {
+  output.innerHTML = '<div>Starting Macrodata Refinement... Click a number, then a bin to sort! Esc or Ctrl-C to exit.</div>';
+  if (terminal.style.color === '#fff') {
+    const mdrDiv = output.lastChild;
+    applyRainbowText(mdrDiv, mdrDiv.textContent);
+  }
+  canvas.style.display = 'block';
+  input.disabled = true;
+
+  const ctx = canvas.getContext('2d');
+  canvas.width = canvas.offsetWidth;
+  canvas.height = canvas.offsetHeight;
+  const WIDTH = canvas.width;
+  const HEIGHT = canvas.height;
+
+  const gridSize = 40;
+  const gridRows = 5;
+  const gridCols = 5;
+  const gridWidth = gridCols * gridSize;
+  const gridHeight = gridRows * gridSize;
+  const gridX = (WIDTH - gridWidth) / 2;
+  const gridY = HEIGHT / 4;
+
+  const binWidth = 60;
+  const binHeight = 80;
+  const binCount = 5;
+  const binsX = (WIDTH - (binWidth * binCount)) / 2;
+  const binsY = gridY + gridHeight + 50;
+
+  const fileNames = ['Tumwater', 'Cairns', 'Culpepper', 'Dranesville', 'Cold Harbor'];
+  const fileName = fileNames[Math.floor(Math.random() * fileNames.length)];
+
+  let numbers = Array(gridRows).fill().map(() => Array(gridCols).fill().map(() => Math.floor(Math.random() * 10)));
+  let selectedNumber = null;
+  const bins = Array(binCount).fill().map(() => ({
+    wo: 0, fc: 0, dr: 0, ma: 0 // Woe, Frolic, Dread, Malice progress
+  }));
+
+  function getTotalProgress(bin) {
+    return bin.wo + bin.fc + bin.dr + bin.ma;
+  }
+
+  canvas.addEventListener('click', handleClick);
+
+  function handleClick(event) {
+    const rect = canvas.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+
+    // Check if clicked a number
+    for (let r = 0; r < gridRows; r++) {
+      for (let c = 0; c < gridCols; c++) {
+        const numX = gridX + c * gridSize;
+        const numY = gridY + r * gridSize;
+        if (x >= numX && x < numX + gridSize && y >= numY && y < numY + gridSize) {
+          selectedNumber = { r, c };
+          return;
+        }
+      }
+    }
+
+    // Check if clicked a bin
+    if (selectedNumber) {
+      for (let i = 0; i < binCount; i++) {
+        const binX = binsX + i * binWidth;
+        const binY = binsY;
+        if (x >= binX && x < binX + binWidth && y >= binY && y < binY + binHeight) {
+          const bin = bins[i];
+          const temper = ['wo', 'fc', 'dr', 'ma'][Math.floor(Math.random() * 4)];
+          bin[temper] += Math.floor(Math.random() * 20) + 10; // Random progress boost
+          numbers[selectedNumber.r][selectedNumber.c] = Math.floor(Math.random() * 10); // Replace sorted number
+          selectedNumber = null;
+          if (getTotalProgress(bin) >= 100) {
+            output.innerHTML += '<div>File refinement complete! Type anything to continue.</div>';
+            if (terminal.style.color === '#fff') {
+              const completeDiv = output.lastChild;
+              applyRainbowText(completeDiv, completeDiv.textContent);
+            }
+            endGame();
+          }
+          return;
+        }
+      }
+    }
+  }
+
+  document.addEventListener('keydown', keyDownHandler);
+  document.addEventListener('keyup', keyUpHandler);
+
+  function keyDownHandler(e) {
+    if (e.key === 'Escape' || (e.ctrlKey && e.key === 'c')) {
+      endGame();
+      output.innerHTML = '';
+    }
+  }
+  function keyUpHandler(e) {}
+
+  function draw() {
+    ctx.clearRect(0, 0, WIDTH, HEIGHT);
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, WIDTH, HEIGHT);
+
+    // Draw file name and progress
+    ctx.fillStyle = '#fff';
+    ctx.font = '18px Roboto Mono';
+    ctx.textAlign = 'center';
+    ctx.fillText(`File: ${fileName}`, WIDTH / 2, 50);
+    const totalProgress = bins.reduce((sum, bin) => sum + getTotalProgress(bin), 0) / (binCount * 100) * 100;
+    ctx.fillText(`${Math.floor(totalProgress)}%`, WIDTH / 2, 80);
+
+    // Draw number grid
+    for (let r = 0; r < gridRows; r++) {
+      for (let c = 0; c < gridCols; c++) {
+        const x = gridX + c * gridSize;
+        const y = gridY + r * gridSize;
+        ctx.strokeStyle = '#0f0';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(x, y, gridSize, gridSize);
+        ctx.fillStyle = selectedNumber && selectedNumber.r === r && selectedNumber.c === c ? '#ff0' : '#fff';
+        ctx.font = '18px Roboto Mono';
+        ctx.textAlign = 'center';
+        ctx.fillText(numbers[r][c], x + gridSize / 2, y + gridSize / 2 + 6);
+      }
+    }
+
+    // Draw bins
+    for (let i = 0; i < binCount; i++) {
+      const x = binsX + i * binWidth;
+      const y = binsY;
+      ctx.strokeStyle = '#0f0';
+      ctx.strokeRect(x, y, binWidth, binHeight);
+      ctx.fillStyle = '#fff';
+      ctx.font = '14px Roboto Mono';
+      ctx.textAlign = 'center';
+      ctx.fillText(`0${i + 1}`, x + binWidth / 2, y + 15);
+
+      const bin = bins[i];
+      const barWidth = binWidth - 10;
+      const barHeight = 10;
+      ctx.fillStyle = '#FF6666'; // WO
+      ctx.fillRect(x + 5, y + 25, Math.min(bin.wo, 100) / 100 * barWidth, barHeight);
+      ctx.fillStyle = '#FFCC66'; // FC
+      ctx.fillRect(x + 5, y + 40, Math.min(bin.fc, 100) / 100 * barWidth, barHeight);
+      ctx.fillStyle = '#66FF66'; // DR
+      ctx.fillRect(x + 5, y + 55, Math.min(bin.dr, 100) / 100 * barWidth, barHeight);
+      ctx.fillStyle = '#66CCFF'; // MA
+      ctx.fillRect(x + 5, y + 70, Math.min(bin.ma, 100) / 100 * barWidth, barHeight);
+
+      ctx.fillStyle = '#fff';
+      ctx.font = '10px Roboto Mono';
+      ctx.fillText('WO', x + 5, y + 34);
+      ctx.fillText('FC', x + 5, y + 49);
+      ctx.fillText('DR', x + 5, y + 64);
+      ctx.fillText('MA', x + 5, y + 79);
+    }
+
+    requestAnimationFrame(draw);
+  }
+
+  function endGame() {
+    canvas.style.display = 'none';
+    input.disabled = false;
+    input.focus();
+    ctx.clearRect(0, 0, WIDTH, HEIGHT);
+    canvas.removeEventListener('click', handleClick);
     document.removeEventListener('keydown', keyDownHandler);
     document.removeEventListener('keyup', keyUpHandler);
   }
