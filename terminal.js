@@ -82,7 +82,7 @@ function processCommand(cmd) {
   switch (command) {
     case 'help':
     case 'man':
-      response = 'Commands: whoami, about, hack, joke, explore [platform/playground/customers/people/blogs/videos], theme [dark/light/neon/pride], clear, game' + (isHacked ? ', exit' : '');
+      response = 'Commands: whoami, about, hack, joke, explore, theme, clear, game, refine' + (isHacked ? ', exit' : '');
       break;
     case '?':
     case 'about':
@@ -156,7 +156,8 @@ function processCommand(cmd) {
         'customers': { name: 'Customers', url: 'https://www.kloudfuse.com/customers' },
         'people': { name: 'People', url: 'https://www.kloudfuse.com/company' },
         'blogs': { name: 'Blogs', url: 'https://www.kloudfuse.com/blog' },
-        'videos': { name: 'Videos', url: 'https://youtube.com/@kloudfuse/videos' }
+        'videos': { name: 'Videos', url: 'https://youtube.com/@kloudfuse/videos' },
+        'docs': { name: 'Docs', url: 'https://docs.kloudfuse.com' }
       };
       if (arg && exploreOptions[arg]) {
         const choice = exploreOptions[arg];
@@ -184,7 +185,7 @@ function processCommand(cmd) {
           terminal.scrollTop = terminal.scrollHeight;
         }, 2000);
       } else {
-        response = 'Usage: explore [platform/playground/customers/people/blogs/videos]';
+        response = 'Usage: explore [platform/playground/customers/people/blogs/videos/docs]';
       }
       break;
     case 'theme':
@@ -280,7 +281,7 @@ function processCommand(cmd) {
       break;
     case 'game':
       if (!arg) {
-        response = 'Choose a game: game brickout, game tetris, game joshua, game mdr';
+        response = 'Choose a game: game brickout, game tetris, game joshua';
       } else {
         switch (arg) {
           case 'brickout':
@@ -342,14 +343,14 @@ function processCommand(cmd) {
               }, 500);
             }, 1000);
             return;
-          case 'mdr':
-            startMDRGame();
-            return;
           default:
-            response = `Unknown game: ${arg}. Choose: game brickout, game tetris, game joshua, game mdr`;
+            response = `Unknown game: ${arg}. Choose: game brickout, game tetris, game joshua`;
         }
       }
       break;
+    case 'refine':
+      startMDRGame();
+      return;
     default:
       response = `Command not found: ${cmd}. Type 'help' for options.`;
   }
