@@ -58,7 +58,7 @@ function applyRainbowText(element, text) {
   }
 }
 
-function applyPrideTheme() {
+function applyCharityTheme() {
   terminal.style.background = '#000';
   terminal.style.color = '#fff';
   applyRainbowText(header.querySelector('a'), 'Kloudfuse OS Version 3.3');
@@ -119,7 +119,7 @@ function processCommand(cmd) {
         prompt.innerText = 'root@kloudfuse> ';
         isHacked = true;
         if (terminal.style.color === '#fff') {
-          applyPrideTheme();
+          applyCharityTheme();
         }
         terminal.scrollTop = terminal.scrollHeight;
       }, 3000);
@@ -180,7 +180,7 @@ function processCommand(cmd) {
           output.appendChild(tabDiv);
           window.open(choice.url, '_blank');
           if (terminal.style.color === '#fff') {
-            applyPrideTheme();
+            applyCharityTheme();
           }
           terminal.scrollTop = terminal.scrollHeight;
         }, 2000);
@@ -247,12 +247,12 @@ function processCommand(cmd) {
           });
           response = 'Theme set to neon.';
           break;
-        case 'pride':
-          applyPrideTheme();
-          response = 'Theme set to pride. 🌈';
+        case 'charity':
+          applyCharityTheme();
+          response = 'Theme set to charity. 🌈';
           break;
         default:
-          response = 'Usage: theme [dark/light/neon/pride]';
+          response = 'Usage: theme [dark/light/neon/charity]';
       }
       break;
     case 'sudo':
@@ -273,7 +273,7 @@ function processCommand(cmd) {
         prompt.innerText = 'kloudfuse> ';
         isHacked = false;
         response = 'Logged out of root access.';
-        if (terminal.style.color === '#fff') applyPrideTheme();
+        if (terminal.style.color === '#fff') applyCharityTheme();
         else prompt.style.color = terminal.style.color;
       } else {
         response = 'Not in root mode.';
@@ -710,7 +710,7 @@ function startTetrisGame() {
     }
 
     if (leftPressed && !collide(currentX - 1, currentY, currentShape)) currentX--;
-    if (rightPressed && !collide(currentX + 1, currentY, currentShape)) currentX++;
+    if (rightPressed && !collide(currentX + 1, currentY, currentShape)) currentX--;
 
     requestAnimationFrame(draw);
   }
