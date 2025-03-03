@@ -371,6 +371,7 @@ function startBrickoutGame() {
     const brickoutDiv = output.lastChild;
     applyRainbowText(brickoutDiv, brickoutDiv.textContent);
   }
+  terminal.scrollTop = terminal.scrollHeight;
   canvas.style.display = 'block';
   input.disabled = true;
 
@@ -509,16 +510,18 @@ function startBrickoutGame() {
     document.removeEventListener('keyup', keyUpHandler);
   }
 
-  draw();
+  // Delay game start to show instructions
+  setTimeout(draw, 2000); // 2-second delay
 }
 
 // Tetris Game
 function startTetrisGame() {
-  output.innerHTML = '<div>Starting Tetris... Use ← and → keys to move, ↑ to rotate, ↓ to drop! Esc or Ctrl-C to exit.</div>';
+  output.innerHTML = '<div>Starting Tetris... Use ← and → to move, ↑ to rotate, ↓ to drop! Esc or Ctrl-C to exit.</div>';
   if (terminal.style.color === '#fff') {
     const tetrisDiv = output.lastChild;
     applyRainbowText(tetrisDiv, tetrisDiv.textContent);
   }
+  terminal.scrollTop = terminal.scrollHeight;
   canvas.style.display = 'block';
   input.disabled = true;
 
@@ -546,6 +549,7 @@ function startTetrisGame() {
   let currentShape = randomShape();
   let currentX = Math.floor(cols / 2) - Math.floor(currentShape[0].length / 2);
   let currentY = -currentShape.length;
+  let moveCooldown = 0; // Cooldown for left/right movement
 
   function randomShape() {
     const index = Math.floor(Math.random() * shapes.length);
@@ -650,16 +654,16 @@ function startTetrisGame() {
 
   let dropCounter = 0;
   const dropInterval = 30;
+  let leftPressed = false;
+  let rightPressed = false;
+  let downPressed = false;
 
   document.addEventListener('keydown', keyDownHandler);
   document.addEventListener('keyup', keyUpHandler);
 
-  let leftPressed = false;
-  let rightPressed = false;
-  let downPressed = false;
   function keyDownHandler(e) {
-    if (e.key === 'ArrowLeft') leftPressed = true;
-    else if (e.key === 'ArrowRight') rightPressed = true;
+    if (e.key === 'ArrowLeft' && !e.repeat) leftPressed = true;
+    else if (e.key === 'ArrowRight' && !e.repeat) rightPressed = true;
     else if (e.key === 'ArrowDown') downPressed = true;
     else if (e.key === 'ArrowUp' && !e.repeat) rotateShape();
     if (e.key === 'Escape' || (e.ctrlKey && e.key === 'c')) {
@@ -670,6 +674,7 @@ function startTetrisGame() {
       }, 1000);
     }
   }
+
   function keyUpHandler(e) {
     if (e.key === 'ArrowLeft') leftPressed = false;
     else if (e.key === 'ArrowRight') rightPressed = false;
@@ -709,8 +714,18 @@ function startTetrisGame() {
       dropCounter = 0;
     }
 
-    if (leftPressed && !collide(currentX - 1, currentY, currentShape)) currentX--;
-    if (rightPressed && !collide(currentX + 1, currentY, currentShape)) currentX--;
+    // Throttle left/right movement
+    if (moveCooldown > 0) moveCooldown--;
+    if (moveCooldown <= 0) {
+      if (leftPressed && !collide(currentX - 1, currentY, currentShape)) {
+        currentX--;
+        moveCooldown = 5; // ~100ms cooldown (assuming 60fps)
+      }
+      if (rightPressed && !collide(currentX + 1, currentY, currentShape)) {
+        currentX++;
+        moveCooldown = 5;
+      }
+    }
 
     requestAnimationFrame(draw);
   }
@@ -724,7 +739,8 @@ function startTetrisGame() {
     document.removeEventListener('keyup', keyUpHandler);
   }
 
-  draw();
+  // Delay game start to show instructions
+  setTimeout(draw, 2000); // 2-second delay
 }
 
 // Macrodata Refinement (MDR) Game
@@ -898,4 +914,4 @@ function startMDRGame() {
   }
 
   draw();
-}
+} 
