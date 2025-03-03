@@ -550,6 +550,7 @@ function startTetrisGame() {
   let currentX = Math.floor(cols / 2) - Math.floor(currentShape[0].length / 2);
   let currentY = -currentShape.length;
   let moveCooldown = 0; // Cooldown for left/right movement
+  let justMerged = false; // Flag to delay new piece spawn
 
   function randomShape() {
     const index = Math.floor(Math.random() * shapes.length);
@@ -569,10 +570,13 @@ function startTetrisGame() {
 
   function drawShape() {
     for (let r = 0; r < currentShape.length; r++) {
-      for (let c = 0; c < currentShape[r].length; c++) {
-        if (currentShape[r][c] && currentY + r >= 0) {
-          ctx.fillStyle = colors[shapes.indexOf(shapes.find(s => s.toString() === currentShape.toString()))];
-          ctx.fillRect(offsetX + (currentX + c) * gridSize, (currentY + r + 4) * gridSize, gridSize - 1, gridSize - 1);
+      for (let c = 0; c < currentShape[0].length; c++) { // Use currentShape[0].length for width
+        if (currentShape[r][c]) {
+          const drawY = currentY + r;
+          if (drawY >= -1) { // Draw if at least partially visible
+            ctx.fillStyle = colors[shapes.indexOf(shapes.find(s => s.toString() === currentShape.toString()))];
+            ctx.fillRect(offsetX + (currentX + c) * gridSize, (drawY + 4) * gridSize, gridSize - 1, gridSize - 1);
+          }
         }
       }
     }
@@ -634,6 +638,7 @@ function startTetrisGame() {
         }
       }
     }
+    justMerged = true; // Set flag to delay new piece
   }
 
   function clearLines() {
@@ -691,32 +696,37 @@ function startTetrisGame() {
     if (dropCounter >= dropInterval || downPressed) {
       if (!collide(currentX, currentY + 1, currentShape)) {
         currentY++;
-      } else if (currentY < 0) {
+        justMerged = false; // Reset flag if still falling
       } else {
         merge();
         clearLines();
-        currentShape = randomShape();
-        currentX = Math.floor(cols / 2) - Math.floor(currentShape[0].length / 2);
-        currentY = -currentShape.length;
-        if (collide(currentX, currentY, currentShape)) {
-          drawGameOverModal();
-          setTimeout(() => {
-            endGame();
-            output.innerHTML = '<div>Game Over! Type anything to continue.</div>';
-            if (terminal.style.color === '#fff') {
-              const gameOverDiv = output.lastChild;
-              applyRainbowText(gameOverDiv, gameOverDiv.textContent);
+        setTimeout(() => {
+          if (!collide(currentX, currentY, currentShape)) { // Check if merge position is still valid
+            currentShape = randomShape();
+            currentX = Math.floor(cols / 2) - Math.floor(currentShape[0].length / 2);
+            currentY = -currentShape.length;
+            justMerged = false;
+            if (collide(currentX, currentY, currentShape)) {
+              drawGameOverModal();
+              setTimeout(() => {
+                endGame();
+                output.innerHTML = '<div>Game Over! Type anything to continue.</div>';
+                if (terminal.style.color === '#fff') {
+                  const gameOverDiv = output.lastChild;
+                  applyRainbowText(gameOverDiv, gameOverDiv.textContent);
+                }
+              }, 1000);
+              return;
             }
-          }, 1000);
-          return;
-        }
+          }
+        }, 200); // 200ms delay to show merged piece
       }
       dropCounter = 0;
     }
 
     // Throttle left/right movement
     if (moveCooldown > 0) moveCooldown--;
-    if (moveCooldown <= 0) {
+    if (moveCooldown <= 0 && !justMerged) { // Don't move if just merged
       if (leftPressed && !collide(currentX - 1, currentY, currentShape)) {
         currentX--;
         moveCooldown = 5; // ~100ms cooldown (assuming 60fps)
@@ -914,4 +924,4 @@ function startMDRGame() {
   }
 
   draw();
-} 
+}
