@@ -1,119 +1,126 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Terminal Fun</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
-  <style>
-    body {
-      margin: 0;
-      background: #000;
-      font-family: 'Roboto Mono', monospace;
-    }
-    #terminal {
-      width: 100%;
-      height: 100vh;
-      background: #000;
-      color: #0f0;
-      padding: 20px;
-      box-sizing: border-box;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      overflow-y: auto;
-    }
-    #header {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      font-family: 'Roboto Mono', monospace;
-      font-size: 18px;
-      color: #0f0;
-    }
-    #header a {
-      color: #0f0;
-      text-decoration: none;
-    }
-    #header a:hover {
-      color: #87CEFA; /* Light blue */
-      text-decoration: underline;
-    }
-    #output {
-      flex-grow: 1;
-      overflow-y: auto;
-      font-family: 'Roboto Mono', monospace;
-      font-size: 18px;
-      color: #0f0;
-      margin-top: 40px; /* Space for header */
-    }
-    #output div {
-      font-family: 'Roboto Mono', monospace;
-      font-size: 18px;
-      color: inherit;
-    }
-    #input-line {
-      display: flex;
-      align-items: center;
-      margin-top: 10px;
-    }
-    #prompt {
-      color: #0f0;
-      font-size: 18px;
-    }
-    #input-wrapper {
-      position: relative;
-      flex-grow: 1;
-      margin-left: 4px;
-    }
-    #input {
-      background: none;
-      border: none;
-      color: #0f0;
-      font-family: 'Roboto Mono', monospace;
-      font-size: 18px;
-      outline: none;
-      width: 100%;
-      padding: 0;
-      caret-color: transparent;
-    }
-    #cursor {
-      position: absolute;
-      width: 10px;
-      height: 18px; /* Match font-size of letters */
-      background: #0f0;
-      animation: blink 0.7s infinite;
-      top: 2px;
-      left: 0;
-    }
-    @keyframes blink {
-      50% { opacity: 0; }
-    }
-    #game-canvas {
-      display: none;
-      width: calc(100% - 40px);
-      height: calc(100% - 68px);
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      border: 1px solid #0f0;
-    }
-  </style>
-</head>
-<body>
-  <div id="terminal">
-    <div id="header">
-      <a href="https://kloudfuse.com" target="_blank">Kloudfuse OS Version 3.3</a>
-    </div>
-    <div id="output"></div>
-    <div id="input-line">
-      <span id="prompt">kloudfuse> </span>
-      <div id="input-wrapper">
-        <input type="text" id="input" autofocus>
-        <span id="cursor"></span>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Terminal Fun</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        margin: 0;
+        background: #000;
+        font-family: "Roboto Mono", monospace;
+      }
+      #terminal {
+        width: 100%;
+        height: 100vh;
+        background: #000;
+        color: #0f0;
+        padding: 20px;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        overflow-y: auto;
+      }
+      #header {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        font-family: "Roboto Mono", monospace;
+        font-size: 18px;
+        color: #0f0;
+      }
+      #header a {
+        color: #0f0;
+        text-decoration: none;
+      }
+      #header a:hover {
+        color: #87cefa; /* Light blue */
+        text-decoration: underline;
+      }
+      #output {
+        flex-grow: 1;
+        overflow-y: auto;
+        font-family: "Roboto Mono", monospace;
+        font-size: 18px;
+        color: #0f0;
+        margin-top: 40px; /* Space for header */
+      }
+      #output div {
+        font-family: "Roboto Mono", monospace;
+        font-size: 18px;
+        color: inherit;
+      }
+      #input-line {
+        display: flex;
+        align-items: center;
+        margin-top: 10px;
+      }
+      #prompt {
+        color: #0f0;
+        font-size: 18px;
+      }
+      #input-wrapper {
+        position: relative;
+        flex-grow: 1;
+        margin-left: 4px;
+      }
+      #input {
+        background: none;
+        border: none;
+        color: #0f0;
+        font-family: "Roboto Mono", monospace;
+        font-size: 18px;
+        outline: none;
+        width: 100%;
+        padding: 0;
+        caret-color: transparent;
+      }
+      #cursor {
+        position: absolute;
+        width: 10px;
+        height: 18px; /* Match font-size of letters */
+        background: #0f0;
+        animation: blink 0.7s infinite;
+        top: 2px;
+        left: 0;
+      }
+      @keyframes blink {
+        50% {
+          opacity: 0;
+        }
+      }
+      #game-canvas {
+        display: none;
+        width: calc(100% - 40px);
+        height: calc(100% - 68px);
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        border: 1px solid #0f0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="terminal">
+      <div id="header">
+        <a href="https://kloudfuse.com" target="_blank"
+          >Kloudfuse OS Version 3.3</a
+        >
       </div>
+      <div id="output"></div>
+      <div id="input-line">
+        <span id="prompt">kloudfuse> </span>
+        <div id="input-wrapper">
+          <input type="text" id="input" autofocus />
+          <span id="cursor"></span>
+        </div>
+      </div>
+      <canvas id="game-canvas"></canvas>
     </div>
-    <canvas id="game-canvas"></canvas>
-  </div>
-  <script src="https://wilde-kf.github.io/terminal-kf/terminal.js"></script>
-</body>
+    <script src="https://wilde-kf.github.io/kf-fun-tools/terminal/terminal.js"></script>
+  </body>
 </html>
