@@ -105,11 +105,12 @@ function processCommand(cmd) {
   switch (command) {
     case "help":
     case "man":
+    case "/":
+    case "?":
       response =
         "Commands: whoami, about, hack, joke, explore, theme, clear, game, refine" +
         (isHacked ? ", exit" : "");
       break;
-    case "?":
     case "about":
       response =
         "We are Kloudfuse, full stack observability. Hosted by you. Managed by us. Far less expensive. Far more secure.";
