@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kloudfuse Sales API Documentation</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background: #f4f4f4;
+            color: #333;
+            transition: background 0.3s, color 0.3s;
+        }
+        .container {
+            display: flex;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .sidebar {
+            width: 250px;
+            position: sticky;
+            top: 20px;
+            height: calc(100vh - 40px);
+            overflow-y: auto;
+            padding-right: 20px;
+        }
+        .sidebar a {
+            display: block;
+            padding: 10px 0;
+            color: #3399ff;
+            text-decoration: none;
+        }
+        .sidebar a:hover {
+            text-decoration: underline;
+        }
+        .content {
+            flex: 1;
+            padding-left: 20px;
+        }
+        h1, h2, h3 {
+            color: #222;
+        }
+        h1 {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+        h2 {
+            font-size: 1.5em;
+            margin-top: 40px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+        h3 {
+            font-size: 1.2em;
+            margin-top: 20px;
+        }
+        pre {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+            font-size: 0.9em;
+        }
+        pre .key { color: #3399ff; }
+        pre .string { color: #f78c6c; }
+        pre .number { color: #f78c6c; }
+        pre .boolean { color: #ffcb6b; }
+        code {
+            background: #e0e0e0;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+        }
+        form {
+            margin-top: 10px;
+            padding: 15px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        form label {
+            display: block;
+            margin: 10px 0 5px;
+            font-weight: bold;
+        }
+        form input, form textarea {
+            width: 100%;
+            max-width: 400px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        form button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background: #3399ff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        form button:hover {
+            background: #1a80e6;
+        }
+        .dark-mode {
+            background: #1e1e1e;
+            color: #d4d4d4;
+        }
+        .dark-mode h1, .dark-mode h2, .dark-mode h3 {
+            color: #ffffff;
+        }
+        .dark-mode pre {
+            background: #2d2d2d;
+        }
+        .dark-mode code {
+            background: #3c3c3c;
+        }
+        .dark-mode .sidebar a {
+            color: #66b3ff;
+        }
+        .dark-mode form {
+            background: #2d2d2d;
+            border-color: #444;
+        }
+        .dark-mode form input, .dark-mode form textarea {
+            background: #3c3c3c;
+            border-color: #555;
+            color: #d4d4d4;
+        }
+        .toggle-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background: #3399ff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .toggle-btn:hover {
+            background: #1a80e6;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+            max-width: 400px;
+        }
+        .modal-content button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: #3399ff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .modal-content button:hover {
+            background: #1a80e6;
+        }
+        .dark-mode .modal-content {
+            background: #2d2d2d;
+            color: #d4d4d4;
+        }
+    </style>
+</head>
+<body>
+    <button class="toggle-btn" onclick="toggleDarkMode()">Toggle Dark Mode</button>
+    <div class="container">
+        <div class="sidebar">
+            <h3>Navigation</h3>
+            <a href="#overview">Overview</a>
+            <a href="#authentication">Authentication</a>
+            <a href="#endpoints">Endpoints</a>
+            <a href="#get-kloudfuse-value-prop">GET /kloudfuse/value-prop</a>
+            <a href="#post-client-challenges">POST /client/challenges</a>
+            <a href="#post-client-discovery">POST /client/discovery</a>
+            <a href="#get-kloudfuse-pricing">GET /kloudfuse/pricing</a>
+            <a href="#post-client-demo-request">POST /client/demo-request</a>
+            <a href="#status-codes">Status Codes</a>
+            <a href="#examples">Examples</a>
+            <a href="#best-practices">Best Practices</a>
+        </div>
+        <div class="content">
+            <h1 id="overview">Kloudfuse Sales API Documentation</h1>
+            <h2>Overview</h2>
+            <p>At Kloudfuse, we’re all about pushing boundaries—especially when it comes to how sales teams work with engineering crews like yours. Why keep starting from zero with endless discovery calls? We’re here to overhaul that. This API lets us skip the slog and jump straight into solving your observability challenges. We’re a team that cares, loves working with builders, and wants to make this easy. Hit <code>/client/*</code> endpoints to share your world; use <code>/kloudfuse/*</code> endpoints to see how we can help—without the insane costs of Datadog or Splunk.</p>
+            <p><strong>Base URL</strong>: <code>https://kloudfuse.com/sales/v1/[your-name]</code></p>
+
+            <h2 id="authentication">Authentication</h2>
+            <p>No tokens—just bring:</p>
+            <ul>
+                <li>A specific pain (e.g., "Our traces lag").</li>
+                <li>Your role (e.g., "I’m the SRE owning this").</li>
+            </ul>
+
+            <h2 id="endpoints">Endpoints</h2>
+
+            <h3 id="get-kloudfuse-value-prop">GET /kloudfuse/value-prop</h3>
+            <p>Get Kloudfuse’s pitch, tuned to your pain—and budget.</p>
+            <h4>Parameters</h4>
+            <ul>
+                <li><code>pain_point</code> (optional): <code>latency</code> | <code>cost</code> | <code>complexity</code> | <code>scale</code>.</li>
+                <li><code>stack</code> (optional): e.g., "New Relic, Honeycomb".</li>
+            </ul>
+            <h4>Response</h4>
+            <pre><span class="key">"status"</span>: <span class="string">"success"</span>,
+<span class="key">"data"</span>: {
+  <span class="key">"value_prop"</span>: <span class="string">"Self-hosted observability, 40% MTTR drop, no SaaS fees or egress costs"</span>,
+  <span class="key">"differentiator"</span>: <span class="string">"Full control, half the price of Datadog"</span>,
+  <span class="key">"savings_question"</span>: <span class="string">"Save 50% vs. Dynatrace—what’s your next big move?"</span>,
+  <span class="key">"next_step"</span>: <span class="string">"Try POST /client/demo-request"</span>
+}</pre>
+            <h4>Example</h4>
+            <p><strong>Request</strong>: <code>GET /kloudfuse/value-prop?pain_point=cost</code></p>
+            <p><strong>Usage</strong>: See how Kloudfuse beats your pricey stack.</p>
+
+            <h3 id="post-client-challenges">POST /client/challenges</h3>
+            <p>Tell us your observability headaches.</p>
+            <h4>Request Body</h4>
+            <pre><span class="key">"challenge"</span>: <span class="string">"Metrics load too slow"</span>,
+<span class="key">"impact"</span>: <span class="string">"Missed SLAs"</span>,
+<span class="key">"current_fix"</span>: <span class="string">"Splunk, barely"</span></pre>
+            <h4>Try It</h4>
+            <form onsubmit="showModal(event)">
+                <label for="challenge">Challenge</label>
+                <input type="text" id="challenge" placeholder="e.g., Metrics load too slow">
+                <label for="impact">Impact</label>
+                <input type="text" id="impact" placeholder="e.g., Missed SLAs">
+                <label for="current_fix">Current Fix</label>
+                <input type="text" id="current_fix" placeholder="e.g., Splunk, barely">
+                <button type="submit">Submit</button>
+            </form>
+            <h4>Response</h4>
+            <pre><span class="key">"status"</span>: <span class="string">"received"</span>,
+<span class="key">"kloudfuse_angle"</span>: <span class="string">"Self-hosted, sub-second metrics—no egress fees"</span>,
+<span class="key">"follow_up"</span>: <span class="string">"What’s your data volume?"</span></pre>
+            <h4>Notes</h4>
+            <p>More detail = quicker results.</p>
+
+            <h3 id="post-client-discovery">POST /client/discovery</h3>
+            <p>Share your context with guided questions based on MEDDPICC—a framework we use to cut through the noise. It stands for Metrics, Economic Buyer, Decision Criteria, Decision Process, Paper Process, Identify Pain, Champion, Competition. It helps us zero in on your needs fast, but here’s the kicker: it’s also a killer way for <em>you</em> to analyze your own challenges. Use it to break down any problem—observability or otherwise—and you’ll see why your team’s stuck, who can fix it, and what’s in the way.</p>
+            <h4>Request Body (Pick any/all to answer)</h4>
+            <pre><span class="key">"metrics"</span>: <span class="string">"What’s your key metric? (e.g., MTTR, uptime %)"</span>,
+<span class="key">"economic_buyer"</span>: <span class="string">"Who controls the budget? (e.g., CTO, VP Eng)"</span>,
+<span class="key">"decision_criteria"</span>: <span class="string">"What’s non-negotiable? (e.g., latency, cost)"</span>,
+<span class="key">"decision_process"</span>: <span class="string">"How do you choose? (e.g., POC, consensus)"</span>,
+<span class="key">"paper_process"</span>: <span class="string">"What’s your buying process? (e.g., PO, legal)"</span>,
+<span class="key">"pain"</span>: <span class="string">"What’s breaking now? (e.g., slow RCA)"</span>,
+<span class="key">"champion"</span>: <span class="string">"Who’s driving change internally?"</span>,
+<span class="key">"competition"</span>: <span class="string">"What’s your baseline? (e.g., Datadog, DIY)"</span></pre>
+            <h4>Try It</h4>
+            <form onsubmit="showModal(event)">
+                <label for="metrics">Metrics</label>
+                <input type="text" id="metrics" placeholder="e.g., MTTR under 15 mins">
+                <label for="economic_buyer">Economic Buyer</label>
+                <input type="text" id="economic_buyer" placeholder="e.g., VP of Engineering">
+                <label for="pain">Pain</label>
+                <input type="text" id="pain" placeholder="e.g., Tracing takes hours">
+                <label for="competition">Competition</label>
+                <input type="text" id="competition" placeholder="e.g., Stuck with Honeycomb">
+                <button type="submit">Submit</button>
+            </form>
+            <h4>Example Request</h4>
+            <pre><span class="key">"metrics"</span>: <span class="string">"MTTR under 15 mins"</span>,
+<span class="key">"pain"</span>: <span class="string">"Tracing takes hours"</span>,
+<span class="key">"competition"</span>: <span class="string">"Stuck with Honeycomb"</span></pre>
+            <h4>Response</h4>
+            <pre><span class="key">"status"</span>: <span class="string">"received"</span>,
+<span class="key">"kloudfuse_fit"</span>: <span class="string">"Self-hosted tracing, 40% MTTR cut, no SaaS overhead"</span>,
+<span class="key">"follow_up"</span>: <span class="string">"Who’s your budget owner? Let’s get them in a demo"</span></pre>
+            <h4>Notes</h4>
+            <p>Answer what you can—it sharpens our aim. Try MEDDPICC on your next internal debug—it’ll surprise you.</p>
+
+            <h3 id="get-kloudfuse-pricing">GET /kloudfuse/pricing</h3>
+            <p>Pull a rough Kloudfuse cost estimate.</p>
+            <h4>Parameters</h4>
+            <ul>
+                <li><code>data_volume</code> (optional): e.g., "10TB/month".</li>
+                <li><code>team_size</code> (optional): e.g., "20 engineers".</li>
+            </ul>
+            <h4>Response</h4>
+            <pre><span class="key">"status"</span>: <span class="string">"success"</span>,
+<span class="key">"data"</span>: {
+  <span class="key">"estimate"</span>: <span class="string">"From $X/month for 10TB, 20 users"</span>,
+  <span class="key">"note"</span>: <span class="string">"Finalized post-demo"</span>,
+  <span class="key">"comparison"</span>: <span class="string">"Half of New Relic, no egress fees"</span>
+}</pre>
+            <h4>Example</h4>
+            <p><strong>Request</strong>: <code>GET /kloudfuse/pricing?data_volume=10TB</code></p>
+            <p><strong>Usage</strong>: Compare to your bloated bill.</p>
+
+            <h3 id="post-client-demo-request">POST /client/demo-request</h3>
+            <p>Book a Kloudfuse demo for your use case.</p>
+            <h4>Request Body</h4>
+            <pre><span class="key">"use_case"</span>: <span class="string">"Faster root cause analysis"</span>,
+<span class="key">"availability"</span>: <span class="string">"Tue 11am PST"</span>,
+<span class="key">"attendees"</span>: [<span class="string">"devops"</span>, <span class="string">"eng_lead"</span>]</pre>
+            <h4>Try It</h4>
+            <form onsubmit="showModal(event)">
+                <label for="use_case">Use Case</label>
+                <input type="text" id="use_case" placeholder="e.g., Faster root cause analysis">
+                <label for="availability">Availability</label>
+                <input type="text" id="availability" placeholder="e.g., Tue 11am PST">
+                <label for="attendees">Attendees</label>
+                <input type="text" id="attendees" placeholder="e.g., devops, eng_lead">
+                <button type="submit">Submit</button>
+            </form>
+            <h4>Response</h4>
+            <pre><span class="key">"status"</span>: <span class="string">"scheduled"</span>,
+<span class="key">"confirmation"</span>: <span class="string">"Tue 11am PST—RCA focus locked"</span>,
+<span class="key">"prep"</span>: <span class="string">"I’ll show a 3x speedup with self-hosted—no SaaS tax"</span></pre>
+            <h4>Notes</h4>
+            <p>Slots vanish fast—grab one.</p>
+
+            <h2 id="status-codes">Status Codes</h2>
+            <ul>
+                <li><code>200 OK</code>: We’re aligned—expect a sharp reply.</li>
+                <li><code>400 Bad Request</code>: Too vague—add meat.</li>
+                <li><code>429 Too Many Requests</code>: We’re swamped—give us 24 hours.</li>
+            </ul>
+
+            <h2 id="examples">Examples</h2>
+            <h3>cURL: Grabbing the Pitch</h3>
+            <pre>curl -X GET "https://kloudfuse.com/sales/v1/[your-name]/kloudfuse/value-prop?pain_point=cost" \
+  -H "Context: Splunk’s killing our budget"</pre>
+            <h3>Python: Running Discovery</h3>
+            <pre>import requests
+
+payload = {
+    <span class="key">"metrics"</span>: <span class="string">"99.95% uptime"</span>,
+    <span class="key">"pain"</span>: <span class="string">"Dashboards lag"</span>,
+    <span class="key">"competition"</span>: <span class="string">"New Relic"</span>
+}
+response = requests.post("https://kloudfuse.com/sales/v1/[your-name]/client/discovery", json=payload)
+print(response.json())</pre>
+
+            <h2 id="best-practices">Best Practices</h2>
+            <ul>
+                <li><strong>Use <code>/client/*</code> Early</strong>: Share your world—we’ll build from there.</li>
+                <li><strong>Bring Numbers</strong>: Costs, metrics—make it real.</li>
+                <li><strong>Save Big, Dream Big</strong>: What’s your next win with the savings?</li>
+            </ul>
+        </div>
+    </div>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <h3>Hey, thanks for trying this!</h3>
+            <p>Was this helpful? Maybe we should productize it—let us know what you think!</p>
+            <button onclick="closeModal()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+
+        function showModal(event) {
+            event.preventDefault();
+            document.getElementById('modal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        // Syntax highlighting for JSON
+        document.querySelectorAll('pre').forEach(block => {
+            let text = block.innerHTML;
+            text = text.replace(/"([^"]+)":/g, '<span class="key">"$1":</span>');
+            text = text.replace(/: "([^"]+)"/g, ': <span class="string">"$1"</span>');
+            text = text.replace(/: (\d+)/g, ': <span class="number">$1</span>');
+            text = text.replace(/: (true|false)/g, ': <span class="boolean">$1</span>');
+            block.innerHTML = text;
+        });
+    </script>
+</body>
+</html>
