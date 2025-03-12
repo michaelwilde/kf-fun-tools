@@ -25,27 +25,27 @@ window.addEventListener("load", () => {
   // Set focus immediately
   input.focus();
 
-  // Auto-trigger 'about' after 1 second
+  // Auto-trigger 'help' after 1 second
   setTimeout(() => {
     const autoMessageDiv = document.createElement("div");
-    autoMessageDiv.textContent = "let me tell you about Kloudfuse...";
+    autoMessageDiv.textContent = "let me show you what I can do...";
     output.appendChild(autoMessageDiv);
     terminal.scrollTop = terminal.scrollHeight;
 
-    // Type 'about' one character at a time
-    const aboutCommand = "about";
+    // Type 'help' one character at a time
+    const helpCommand = "help";
     let charIndex = 0;
 
     const typeInterval = setInterval(() => {
-      if (charIndex < aboutCommand.length) {
-        input.value += aboutCommand[charIndex];
+      if (charIndex < helpCommand.length) {
+        input.value += helpCommand[charIndex];
         updateCursorPosition();
         charIndex++;
       } else {
         clearInterval(typeInterval);
         // Process the command after typing is complete
         setTimeout(() => {
-          processCommand("about");
+          processCommand("help");
           input.value = "";
           updateCursorPosition();
         }, 500); // Wait 500ms after typing before executing
