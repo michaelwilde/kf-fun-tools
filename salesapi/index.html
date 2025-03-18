@@ -22,6 +22,17 @@
             --error-color: #dc3545;
         }
         
+        html {
+            box-sizing: border-box;
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+        
+        *, *:before, *:after {
+            box-sizing: inherit;
+        }
+        
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             line-height: 1.6;
@@ -29,14 +40,35 @@
             padding: 0;
             background: var(--light-bg);
             color: var(--dark-text);
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
             transition: background 0.3s, color 0.3s;
         }
         
         .container {
             display: flex;
             max-width: 1200px;
+            width: 100%;
             margin: 0 auto;
             padding: 20px;
+            box-sizing: border-box;
+        }
+        
+        /* Mobile navigation toggle button */
+        .mobile-nav-toggle {
+            display: none;
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 1000;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 16px;
         }
         
         .sidebar {
@@ -47,6 +79,7 @@
             overflow-y: auto;
             padding-right: 20px;
             border-right: 1px solid var(--border-color);
+            transition: transform 0.3s ease;
         }
         
         .sidebar a {
@@ -69,6 +102,7 @@
         .content {
             flex: 1;
             padding-left: 30px;
+            transition: margin-left 0.3s ease;
         }
         
         h1, h2, h3 {
@@ -587,6 +621,104 @@
             border-right: 1px solid #345;
         }
         
+        /* Responsive design for mobile */
+        @media (max-width: 768px) {
+            body {
+                font-size: 16px;
+                overflow-x: hidden;
+                width: 100%;
+            }
+            
+            .container {
+                flex-direction: column;
+                width: 100%;
+                padding: 15px;
+                overflow-x: hidden;
+            }
+            
+            .sidebar {
+                width: 100%;
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 100vh;
+                z-index: 999;
+                background: var(--light-bg);
+                transform: translateX(-100%);
+                padding: 60px 20px 20px 20px;
+                box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .content {
+                padding-left: 0;
+                margin-top: 20px;
+                width: 100%;
+                max-width: 100%;
+                overflow-x: hidden;
+            }
+            
+            .mobile-nav-toggle {
+                display: block;
+            }
+            
+            .dark-mode .sidebar {
+                background: var(--dark-bg);
+            }
+            
+            /* Adjusting content elements for mobile */
+            pre, code {
+                max-width: 100%;
+                overflow-x: auto;
+                white-space: pre-wrap;
+                word-wrap: break-word;
+            }
+            
+            .endpoint {
+                padding: 15px;
+            }
+            
+            .info-box {
+                padding: 15px;
+            }
+            
+            .translation-box {
+                flex-direction: column;
+            }
+            
+            .translation-column {
+                width: 100%;
+                padding: 15px;
+            }
+            
+            .translation-column:first-child {
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+            }
+            
+            img, table {
+                max-width: 100%;
+                height: auto;
+            }
+            
+            .comparison-table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+            
+            /* Ensure Framer embed compatibility */
+            html, body {
+                width: 100%;
+                max-width: 100vw;
+                margin: 0;
+                padding: 0;
+            }
+        }
+        
         /* Style-specific CSS */
         .style-stripe .sidebar {
             background: #0a2540;
@@ -625,27 +757,27 @@
 </head>
 <body>
     <div class="top-controls">
-
+        <button class="mobile-nav-toggle" onclick="toggleMobileNav()"><i class="fas fa-bars"></i></button>
         <button class="toggle-btn" onclick="toggleDarkMode()"><i class="fas fa-moon"></i> Toggle Dark Mode</button>
     </div>
     <div class="container">
         <div class="sidebar">
             <h3>Navigation</h3>
-            <a href="#overview"><i class="fas fa-home"></i> Overview</a>
-            <a href="#sales-engineering"><i class="fas fa-exchange-alt"></i> Sales-Engineering Translation</a>
-            <a href="#authentication"><i class="fas fa-key"></i> Authentication</a>
-            <a href="#endpoints"><i class="fas fa-plug"></i> Endpoints</a>
-            <a href="#get-kloudfuse-value-prop"><i class="fas fa-arrow-right"></i> GET /kloudfuse/value-prop</a>
-            <a href="#post-client-challenges"><i class="fas fa-arrow-right"></i> POST /client/challenges</a>
-            <a href="#post-client-discovery"><i class="fas fa-arrow-right"></i> POST /client/discovery</a>
-            <a href="#get-kloudfuse-pricing"><i class="fas fa-arrow-right"></i> GET /kloudfuse/pricing</a>
-            <a href="#post-client-demo-request"><i class="fas fa-arrow-right"></i> POST /client/demo-request</a>
-            <a href="#meddpicc"><i class="fas fa-clipboard-list"></i> MEDDPICC Framework</a>
-            <a href="#command-of-message"><i class="fas fa-bullseye"></i> Command of the Message</a>
-            <a href="#recommended-reading"><i class="fas fa-book"></i> Recommended Reading</a>
-            <a href="#status-codes"><i class="fas fa-exclamation-circle"></i> Status Codes</a>
-            <a href="#examples"><i class="fas fa-code"></i> Examples</a>
-            <a href="#best-practices"><i class="fas fa-star"></i> Best Practices</a>
+            <a href="javascript:void(0)" onclick="scrollToElement('overview')"><i class="fas fa-home"></i> Overview</a>
+            <a href="javascript:void(0)" onclick="scrollToElement('sales-engineering')"><i class="fas fa-exchange-alt"></i> Sales-Engineering Translation</a>
+            <a href="javascript:void(0)" onclick="scrollToElement('authentication')"><i class="fas fa-key"></i> Authentication</a>
+            <a href="javascript:void(0)" onclick="scrollToElement('endpoints')"><i class="fas fa-plug"></i> Endpoints</a>
+            <a href="javascript:void(0)" onclick="scrollToElement('get-kloudfuse-value-prop')"><i class="fas fa-arrow-right"></i> GET /kloudfuse/value-prop</a>
+            <a href="javascript:void(0)" onclick="scrollToElement('post-client-challenges')"><i class="fas fa-arrow-right"></i> POST /client/challenges</a>
+            <a href="javascript:void(0)" onclick="scrollToElement('post-client-discovery')"><i class="fas fa-arrow-right"></i> POST /client/discovery</a>
+            <a href="javascript:void(0)" onclick="scrollToElement('get-kloudfuse-pricing')"><i class="fas fa-arrow-right"></i> GET /kloudfuse/pricing</a>
+            <a href="javascript:void(0)" onclick="scrollToElement('post-client-demo-request')"><i class="fas fa-arrow-right"></i> POST /client/demo-request</a>
+            <a href="javascript:void(0)" onclick="scrollToElement('meddpicc')"><i class="fas fa-clipboard-list"></i> MEDDPICC Framework</a>
+            <a href="javascript:void(0)" onclick="scrollToElement('command-of-message')"><i class="fas fa-bullseye"></i> Command of the Message</a>
+            <a href="javascript:void(0)" onclick="scrollToElement('recommended-reading')"><i class="fas fa-book"></i> Recommended Reading</a>
+            <a href="javascript:void(0)" onclick="scrollToElement('status-codes')"><i class="fas fa-exclamation-circle"></i> Status Codes</a>
+            <a href="javascript:void(0)" onclick="scrollToElement('examples')"><i class="fas fa-code"></i> Examples</a>
+            <a href="javascript:void(0)" onclick="scrollToElement('best-practices')"><i class="fas fa-star"></i> Best Practices</a>
         </div>
         <div class="content">
             <h1 id="overview">Kloudfuse Sales API Documentation <span class="badge badge-beta">BETA</span></h1>
@@ -657,7 +789,7 @@
             </div>
             
             <h2>Overview</h2>
-            <p>At Kloudfuse, we’re all about pushing boundaries—especially when it comes to how sales teams work with engineering crews like yours. Why keep starting from zero with endless discovery calls? We’re here to overhaul that. This API lets us skip the slog and jump straight into solving your observability challenges. We’re a team that cares, loves working with builders, and wants to make this easy. Hit <code>/client/*</code> endpoints to share your world; use <code>/kloudfuse/*</code> endpoints to see how we can help—without the insane costs of Datadog or Splunk.</p>
+            <p>At <a href="https://kloudfuse.com" target="_blank">Kloudfuse</a>, we’re all about pushing boundaries—especially when it comes to how sales teams work with engineering crews like yours. Why keep starting from zero with endless discovery calls? We’re here to overhaul that. This API lets us skip the slog and jump straight into solving your observability challenges. We’re a team that cares, loves working with builders, and wants to make this easy. Hit <code>/client/*</code> endpoints to share your world; use <code>/kloudfuse/*</code> endpoints to see how we can help—without the insane costs of Datadog or Splunk.</p>
             <p><strong>Base URL</strong>: <code>https://kloudfuse.com/sales/v1/[your-name]</code></p>
 
             <h2 id="sales-engineering">Sales-Engineering Translation</h2>
@@ -856,7 +988,7 @@
             
             <div class="endpoint">
                 <h3><i class="fas fa-book"></i> Gap Selling</h3>
-                <p><a href="https://www.amazon.com/Gap-Selling-Problem-Centric-Everything-Relationships-ebook/dp" target="_blank">Amazon Link</a></p>
+                <p><a href="https://a.co/d/2UG8uKl" target="_blank">Amazon Link</a></p>
                 <div class="translation-box">
                     <div class="translation-column">
                         <h4>What It Teaches</h4>
@@ -1126,6 +1258,68 @@ print(response.json())</pre>
 
         function closeModal() {
             document.getElementById('modal').style.display = 'none';
+        }
+        
+        function toggleMobileNav() {
+            const sidebar = document.querySelector('.sidebar');
+            sidebar.classList.toggle('active');
+        }
+        
+        function scrollToElement(elementId) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                // Close mobile menu if it's open
+                const sidebar = document.querySelector('.sidebar');
+                if (sidebar.classList.contains('active')) {
+                    sidebar.classList.remove('active');
+                }
+                
+                // Get the element's position
+                const elementPosition = element.getBoundingClientRect().top;
+                
+                // Add extra offset for mobile devices to prevent the header from being obscured
+                const isMobile = window.innerWidth <= 768;
+                const mobileOffset = isMobile ? 60 : 0; // Extra pixels of offset for mobile
+                
+                const offsetPosition = elementPosition + window.pageYOffset - mobileOffset;
+                
+                // Very slow, controlled scrolling
+                const duration = 2000; // much longer duration = much slower scroll
+                const startTime = performance.now();
+                const startPosition = window.pageYOffset;
+                
+                function scrollAnimation(currentTime) {
+                    const timeElapsed = currentTime - startTime;
+                    const progress = Math.min(timeElapsed / duration, 1);
+                    
+                    // Gentler easing function for smoother acceleration/deceleration
+                    // This cubic easing function provides an even smoother transition
+                    const easeInOutCubic = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+                    
+                    window.scrollTo({
+                        top: startPosition + (offsetPosition - startPosition) * easeInOutCubic(progress),
+                        behavior: 'auto' // We're controlling the animation manually
+                    });
+                    
+                    if (timeElapsed < duration) {
+                        requestAnimationFrame(scrollAnimation);
+                    }
+                }
+                
+                requestAnimationFrame(scrollAnimation);
+                
+                // Send message to parent frame (Framer) if needed
+                try {
+                    window.parent.postMessage({
+                        type: 'scrollTo',
+                        elementId: elementId,
+                        behavior: 'smooth',
+                        duration: duration
+                    }, '*');
+                } catch (e) {
+                    console.log('Could not communicate with parent frame');
+                }
+            }
         }
         
 

@@ -6,6 +6,8 @@ As a former engineer, now head of sales (and closet vibe-coder), I know engineer
 
 **So we built something I wish I'd had years ago: Sales processes as an API** 🧪
 
+👉 Check it out here: https://kloudfuse.com/tools/salesapi
+
 We've created a mock API documentation site that translates sales methodologies into the format YOU work with daily. No, it's not a real API to call—it's a decoder ring that helps you understand what's happening in those sales meetings and how to navigate them efficiently.
 
 Built for engineers, by engineers:
@@ -23,6 +25,8 @@ For my engineering colleagues:
 
 This is an experiment in respecting your time and expertise. Because you shouldn't need a translator to have productive conversations about tools that could actually help your team.
 
-Check out the repo and let me know what you think. I'm especially interested in feedback from technical leaders who interface with vendors regularly.
+I'm especially interested in feedback from technical leaders who interface with vendors regularly. What other parts of the sales process would you like to see "documented" this way?
+
+And for my sales colleagues: Could this approach help you have more productive conversations with technical teams? Would structuring our discovery and sales process as API documentation make it easier to connect with engineers on their terms?
 
 #EngineeringLeadership #TechProcurement #DeveloperExperience #SoftwareEngineering #TechTools
