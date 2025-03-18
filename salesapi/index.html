@@ -224,10 +224,39 @@
             transform: translateY(1px);
         }
         
-        .toggle-btn {
+        .top-controls {
             position: fixed;
             top: 20px;
             right: 20px;
+            z-index: 100;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .style-selector {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .style-selector label {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .style-selector select {
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            font-size: 14px;
+        }
+        
+        .toggle-btn {
             padding: 10px 20px;
             background: var(--primary-color);
             color: white;
@@ -238,7 +267,6 @@
             align-items: center;
             gap: 8px;
             font-weight: bold;
-            z-index: 100;
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         
@@ -579,10 +607,57 @@
             background: #1a2a3a;
             border-right: 1px solid #345;
         }
+        
+        /* Style-specific CSS */
+        .style-stripe .sidebar {
+            background: #0a2540;
+            border-right: 1px solid #1a3454;
+        }
+        
+        .style-stripe .endpoint {
+            border-left: 4px solid #635bff;
+        }
+        
+        .style-slack .sidebar {
+            background: #611f69;
+        }
+        
+        .style-slack .endpoint {
+            border-left: 4px solid #611f69;
+        }
+        
+        .style-twilio .sidebar {
+            background: linear-gradient(to bottom, #001489, #0d2ca6);
+        }
+        
+        .style-twilio .endpoint {
+            border-left: 4px solid #f22f46;
+        }
+        
+        .style-postman .sidebar {
+            background: #212121;
+            border-right: 1px solid #2e2e2e;
+        }
+        
+        .style-postman .endpoint {
+            border-left: 4px solid #ff6c37;
+        }
     </style>
 </head>
 <body>
-    <button class="toggle-btn" onclick="toggleDarkMode()"><i class="fas fa-moon"></i> Toggle Dark Mode</button>
+    <div class="top-controls">
+        <div class="style-selector">
+            <label for="api-style">API Style:</label>
+            <select id="api-style" onchange="changeApiStyle(this.value)">
+                <option value="kloudfuse" selected>Kloudfuse</option>
+                <option value="stripe">Stripe</option>
+                <option value="slack">Slack</option>
+                <option value="twilio">Twilio</option>
+                <option value="postman">Postman</option>
+            </select>
+        </div>
+        <button class="toggle-btn" onclick="toggleDarkMode()"><i class="fas fa-moon"></i> Toggle Dark Mode</button>
+    </div>
     <div class="container">
         <div class="sidebar">
             <h3>Navigation</h3>
@@ -1081,6 +1156,64 @@ print(response.json())</pre>
 
         function closeModal() {
             document.getElementById('modal').style.display = 'none';
+        }
+        
+        function changeApiStyle(style) {
+            // Remove any existing style classes
+            document.body.classList.remove('style-kloudfuse', 'style-stripe', 'style-slack', 'style-twilio', 'style-postman');
+            
+            // Add the selected style class
+            document.body.classList.add('style-' + style);
+            
+            // Update styles based on selection
+            const root = document.documentElement;
+            
+            switch(style) {
+                case 'stripe':
+                    root.style.setProperty('--primary-color', '#635bff');
+                    root.style.setProperty('--primary-dark', '#4b44c9');
+                    root.style.setProperty('--light-bg', '#f6f9fc');
+                    root.style.setProperty('--dark-bg', '#0a2540');
+                    root.style.setProperty('--dark-secondary', '#1a3454');
+                    document.querySelector('h1').innerHTML = 'Stripe Sales API Documentation <span class="badge badge-beta">BETA</span>';
+                    break;
+                    
+                case 'slack':
+                    root.style.setProperty('--primary-color', '#611f69');
+                    root.style.setProperty('--primary-dark', '#4a1751');
+                    root.style.setProperty('--light-bg', '#f5f5f5');
+                    root.style.setProperty('--dark-bg', '#1a1d21');
+                    root.style.setProperty('--dark-secondary', '#222529');
+                    document.querySelector('h1').innerHTML = 'Slack Sales API Documentation <span class="badge badge-beta">BETA</span>';
+                    break;
+                    
+                case 'twilio':
+                    root.style.setProperty('--primary-color', '#f22f46');
+                    root.style.setProperty('--primary-dark', '#d01a30');
+                    root.style.setProperty('--light-bg', '#f7f7f7');
+                    root.style.setProperty('--dark-bg', '#001489');
+                    root.style.setProperty('--dark-secondary', '#0d2ca6');
+                    document.querySelector('h1').innerHTML = 'Twilio Sales API Documentation <span class="badge badge-beta">BETA</span>';
+                    break;
+                    
+                case 'postman':
+                    root.style.setProperty('--primary-color', '#ff6c37');
+                    root.style.setProperty('--primary-dark', '#e85a2d');
+                    root.style.setProperty('--light-bg', '#f8f8f8');
+                    root.style.setProperty('--dark-bg', '#212121');
+                    root.style.setProperty('--dark-secondary', '#2e2e2e');
+                    document.querySelector('h1').innerHTML = 'Postman Sales API Documentation <span class="badge badge-beta">BETA</span>';
+                    break;
+                    
+                default: // kloudfuse
+                    root.style.setProperty('--primary-color', '#3399ff');
+                    root.style.setProperty('--primary-dark', '#1a80e6');
+                    root.style.setProperty('--light-bg', '#f8f9fa');
+                    root.style.setProperty('--dark-bg', '#1e1e1e');
+                    root.style.setProperty('--dark-secondary', '#2d2d2d');
+                    document.querySelector('h1').innerHTML = 'Kloudfuse Sales API Documentation <span class="badge badge-beta">BETA</span>';
+                    break;
+            }
         }
 
         // Syntax highlighting for JSON
