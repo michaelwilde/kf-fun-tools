@@ -6,7 +6,7 @@ As a former engineer, now head of sales (and closet vibe-coder), I know engineer
 
 **So we built something I wish I'd had years ago: Sales processes as an API** 🧪
 
-👉 Check it out here: https://kloudfuse.com/tools/salesapi
+👉 Check it out here: https://michael.github.io/kf-fun-tools/salesapi/
 
 We've created a mock API documentation site that translates sales methodologies into the format YOU work with daily. No, it's not a real API to call—it's a decoder ring that helps you understand what's happening in those sales meetings and how to navigate them efficiently.
 
