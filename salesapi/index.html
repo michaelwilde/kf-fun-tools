@@ -5,12 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resolve.ai Sales API Documentation</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Young+Serif&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary-color: #3399ff;
             --primary-dark: #1a80e6;
             --secondary-color: #6c757d;
-            --light-bg: #f8f9fa;
+            --light-bg: #F2F1EB;
             --dark-bg: #1e1e1e;
             --dark-secondary: #2d2d2d;
             --light-text: #f8f9fa;
@@ -20,6 +24,8 @@
             --success-color: #28a745;
             --warning-color: #ffc107;
             --error-color: #dc3545;
+            --title-font: 'Young Serif', serif;
+            --body-font: 'Inter', sans-serif;
         }
         
         html {
@@ -34,7 +40,7 @@
         }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: var(--body-font);
             line-height: 1.6;
             margin: 0;
             padding: 0;
@@ -92,6 +98,7 @@
             padding-left: 10px;
             margin: 5px 0;
             transition: all 0.2s ease;
+            font-family: var(--body-font);
         }
         
         .sidebar a:hover {
@@ -109,6 +116,7 @@
         
         h1, h2, h3 {
             color: var(--dark-text);
+            font-family: var(--title-font);
         }
         
         h1 {
@@ -134,6 +142,8 @@
         h4 {
             font-size: 1.1em;
             margin-top: 20px;
+            font-family: var(--body-font);
+            font-weight: 600;
         }
         
         pre {
@@ -218,7 +228,8 @@
         form label {
             display: block;
             margin: 10px 0 5px;
-            font-weight: bold;
+            font-weight: 600;
+            font-family: var(--body-font);
         }
         
         form input, form textarea, form select {
@@ -228,7 +239,7 @@
             border: 1px solid #ccc;
             border-radius: 4px;
             box-sizing: border-box;
-            font-family: inherit;
+            font-family: var(--body-font);
             font-size: 14px;
             transition: border-color 0.2s;
         }
@@ -247,7 +258,8 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 600;
+            font-family: var(--body-font);
             transition: background 0.2s, transform 0.1s;
         }
         
@@ -281,7 +293,8 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            font-weight: bold;
+            font-weight: 600;
+            font-family: var(--body-font);
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         
@@ -325,7 +338,8 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 600;
+            font-family: var(--body-font);
             transition: background 0.2s;
         }
         
@@ -375,6 +389,8 @@
         .info-box h4 {
             margin-top: 0;
             color: var(--primary-color);
+            font-family: var(--body-font);
+            font-weight: 600;
         }
         
         .info-box p:last-child {
@@ -570,6 +586,7 @@
             text-align: center;
             padding-bottom: 10px;
             border-bottom: 1px solid var(--border-color);
+            font-family: var(--title-font);
         }
         
         .comparison-column ul {
@@ -608,6 +625,8 @@
             color: var(--primary-color);
             font-size: 1em;
             text-transform: uppercase;
+            font-family: var(--body-font);
+            font-weight: 600;
         }
         
         .translation-column p:last-child {
@@ -764,7 +783,7 @@
     </div>
     <div class="container">
         <div class="sidebar">
-            <h3>Navigation</h3>
+            <h3 style="font-family: var(--title-font);">Navigation</h3>
             <a href="javascript:void(0)" onclick="scrollToElement('overview')"><i class="fas fa-home"></i> Overview</a>
             <a href="javascript:void(0)" onclick="scrollToElement('sales-engineering')"><i class="fas fa-exchange-alt"></i> Sales-Engineering Translation</a>
             <a href="javascript:void(0)" onclick="scrollToElement('authentication')"><i class="fas fa-key"></i> Authentication</a>
