@@ -53,7 +53,7 @@
         }
         
         .container {
-            display: flex;
+            display: block;
             max-width: 1400px;
             width: 100%;
             margin: 0 auto;
@@ -80,13 +80,15 @@
         .sidebar {
             width: 320px;
             min-width: 320px;
-            position: sticky;
+            position: fixed;
             top: 20px;
+            left: 20px;
             height: calc(100vh - 40px);
             overflow-y: auto;
             padding-right: 20px;
             border-right: 1px solid var(--border-color);
             transition: transform 0.3s ease;
+            z-index: 100;
         }
         
         .sidebar a {
@@ -109,6 +111,7 @@
         
         .content {
             flex: 1;
+            margin-left: 360px;
             padding-left: 30px;
             transition: margin-left 0.3s ease;
             min-width: 0; /* Prevents flex item from overflowing */
@@ -652,6 +655,7 @@
             }
             
             .container {
+                display: flex;
                 flex-direction: column;
                 width: 100%;
                 padding: 15px;
@@ -676,6 +680,7 @@
             }
             
             .content {
+                margin-left: 0;
                 padding-left: 0;
                 margin-top: 20px;
                 width: 100%;
