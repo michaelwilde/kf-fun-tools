@@ -48,7 +48,7 @@
         
         .container {
             display: flex;
-            max-width: 1200px;
+            max-width: 1400px;
             width: 100%;
             margin: 0 auto;
             padding: 20px;
@@ -72,7 +72,8 @@
         }
         
         .sidebar {
-            width: 250px;
+            width: 320px;
+            min-width: 320px;
             position: sticky;
             top: 20px;
             height: calc(100vh - 40px);
@@ -103,6 +104,7 @@
             flex: 1;
             padding-left: 30px;
             transition: margin-left 0.3s ease;
+            min-width: 0; /* Prevents flex item from overflowing */
         }
         
         h1, h2, h3 {
@@ -622,7 +624,7 @@
         }
         
         /* Responsive design for mobile */
-        @media (max-width: 768px) {
+        @media (max-width: 1024px) {
             body {
                 font-size: 16px;
                 overflow-x: hidden;
@@ -1278,7 +1280,7 @@ print(response.json())</pre>
                 const elementPosition = element.getBoundingClientRect().top;
                 
                 // Add extra offset for mobile devices to prevent the header from being obscured
-                const isMobile = window.innerWidth <= 768;
+                const isMobile = window.innerWidth <= 1024;
                 const mobileOffset = isMobile ? 60 : 0; // Extra pixels of offset for mobile
                 
                 const offsetPosition = elementPosition + window.pageYOffset - mobileOffset;
