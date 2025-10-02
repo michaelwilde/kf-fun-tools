@@ -11,8 +11,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Young+Serif&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #3399ff;
-            --primary-dark: #1a80e6;
+            --primary-color: #000000;
+            --primary-dark: #333333;
             --secondary-color: #6c757d;
             --light-bg: #F2F1EB;
             --dark-bg: #1e1e1e;
@@ -21,7 +21,7 @@
             --dark-text: #333;
             --border-color: #ddd;
             --code-bg: #f1f1f1;
-            --success-color: #28a745;
+            --success-color: #657220;
             --warning-color: #ffc107;
             --error-color: #dc3545;
             --title-font: 'Young Serif', serif;
@@ -105,7 +105,7 @@
         
         .sidebar a:hover {
             border-left: 3px solid var(--primary-color);
-            background: rgba(51, 153, 255, 0.1);
+            background: rgba(0, 0, 0, 0.1);
             padding-left: 15px;
         }
         
@@ -382,8 +382,8 @@
         }
         
         .info-box {
-            background-color: rgba(51, 153, 255, 0.1);
-            border-left: 4px solid var(--primary-color);
+            background-color: rgba(101, 114, 32, 0.1);
+            border-left: 4px solid var(--success-color);
             padding: 15px;
             margin: 20px 0;
             border-radius: 0 5px 5px 0;
@@ -391,7 +391,7 @@
         
         .info-box h4 {
             margin-top: 0;
-            color: var(--primary-color);
+            color: var(--success-color);
             font-family: var(--body-font);
             font-weight: 600;
         }
@@ -410,7 +410,7 @@
         }
         
         .comparison-table th {
-            background-color: var(--primary-color);
+            background-color: var(--success-color);
             color: white;
             text-align: left;
             padding: 12px 15px;
@@ -474,13 +474,13 @@
         }
         
         .dark-mode .info-box {
-            background-color: rgba(217, 244, 0, 0.1);
-            border-left: 4px solid #D9F400;
+            background-color: rgba(101, 114, 32, 0.2);
+            border-left: 4px solid #657220;
         }
         
         .dark-mode .comparison-table th {
-            background-color: #D9F400;
-            color: #222222;
+            background-color: #657220;
+            color: white;
         }
         
         .dark-mode .comparison-table td {
@@ -620,13 +620,13 @@
         }
         
         .translation-column:first-child {
-            background: #f0f7ff;
-            border-right: 1px solid #d0e3ff;
+            background: rgba(101, 114, 32, 0.05);
+            border-right: 1px solid rgba(101, 114, 32, 0.2);
         }
         
         .translation-column h4 {
             margin-top: 0;
-            color: var(--primary-color);
+            color: var(--success-color);
             font-size: 1em;
             text-transform: uppercase;
             font-family: var(--body-font);
@@ -642,8 +642,8 @@
         }
         
         .dark-mode .translation-column:first-child {
-            background: rgba(217, 244, 0, 0.05);
-            border-right: 1px solid rgba(217, 244, 0, 0.2);
+            background: rgba(101, 114, 32, 0.1);
+            border-right: 1px solid rgba(101, 114, 32, 0.3);
         }
         
         /* Responsive design for mobile */
