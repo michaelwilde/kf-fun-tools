@@ -84,8 +84,8 @@ function applyRainbowText(element, text) {
 function applyCharityTheme() {
   terminal.style.background = "#000";
   terminal.style.color = "#fff";
-  applyRainbowText(header.querySelector("a"), "Kloudfuse OS Version 3.3");
-  applyRainbowText(prompt, isHacked ? "root@kloudfuse> " : "kloudfuse> ");
+  applyRainbowText(header.querySelector("a"), "Resolve AI Terminal v1.0");
+  applyRainbowText(prompt, isHacked ? "root@resolve> " : "resolve> ");
   input.style.color = roybgivColors[0]; // Light red for input
   cursor.style.background = roybgivColors[0];
   canvas.style.borderColor = "#fff";
@@ -113,10 +113,10 @@ function processCommand(cmd) {
       break;
     case "about":
       response =
-        "We are Kloudfuse, full stack observability. Hosted by you. Managed by us. Far less expensive. Far more secure.";
+        "We are Resolve AI, an Agentic AI Site Reliability Engineer. Autonomous incident response. Reduced MTTR. 24/7 reliability.";
       break;
     case "whoami":
-      response = "curious@kloudfuse.com";
+      response = "engineer@resolve.ai";
       break;
     case "hack":
       output.innerHTML += '<div id="hack-output">Hacking initiated.</div>';
@@ -143,7 +143,7 @@ function processCommand(cmd) {
           grantedDiv.textContent = "ACCESS GRANTED";
         }
         output.appendChild(grantedDiv);
-        prompt.innerText = "root@kloudfuse> ";
+        prompt.innerText = "root@resolve> ";
         isHacked = true;
         if (terminal.style.color === "#fff") {
           applyCharityTheme();
@@ -180,23 +180,24 @@ function processCommand(cmd) {
       const exploreOptions = {
         platform: {
           name: "Platform",
-          url: "https://www.kloudfuse.com/capabilities/unified-observability-platform",
+          url: "https://resolve.ai",
         },
-        playground: {
-          name: "Playground",
-          url: "https://playground.kloudfuse.io",
+        docs: {
+          name: "Documentation",
+          url: "https://resolve.ai/docs",
         },
-        customers: {
-          name: "Customers",
-          url: "https://www.kloudfuse.com/customers",
+        blog: {
+          name: "Blog",
+          url: "https://resolve.ai/blog",
         },
-        people: { name: "People", url: "https://www.kloudfuse.com/company" },
-        blogs: { name: "Blogs", url: "https://www.kloudfuse.com/blog" },
-        videos: {
-          name: "Videos",
-          url: "https://youtube.com/@kloudfuse/videos",
+        company: { 
+          name: "Company", 
+          url: "https://resolve.ai/about" 
         },
-        docs: { name: "Docs", url: "https://docs.kloudfuse.com" },
+        contact: {
+          name: "Contact",
+          url: "https://resolve.ai/contact",
+        },
       };
       if (arg && exploreOptions[arg]) {
         const choice = exploreOptions[arg];
@@ -229,7 +230,7 @@ function processCommand(cmd) {
         }, 2000);
       } else {
         response =
-          "Usage: explore [platform/playground/customers/people/blogs/videos/docs]";
+          "Usage: explore [platform/docs/blog/company/contact]";
       }
       break;
     case "theme":
@@ -238,9 +239,9 @@ function processCommand(cmd) {
           terminal.style.background = "#000";
           terminal.style.color = "#0f0";
           header.style.color = "#0f0";
-          header.querySelector("a").innerHTML = "Kloudfuse OS Version 3.3";
+          header.querySelector("a").innerHTML = "Resolve AI Terminal v1.0";
           header.querySelector("a").style.color = "#0f0";
-          prompt.innerHTML = isHacked ? "root@kloudfuse> " : "kloudfuse> ";
+          prompt.innerHTML = isHacked ? "root@resolve> " : "resolve> ";
           prompt.style.color = "#0f0";
           input.style.color = "#0f0";
           cursor.style.background = "#0f0";
@@ -257,9 +258,9 @@ function processCommand(cmd) {
           terminal.style.background = "#fff";
           terminal.style.color = "#4B0082";
           header.style.color = "#4B0082";
-          header.querySelector("a").innerHTML = "Kloudfuse OS Version 3.3";
+          header.querySelector("a").innerHTML = "Resolve AI Terminal v1.0";
           header.querySelector("a").style.color = "#4B0082";
-          prompt.innerHTML = isHacked ? "root@kloudfuse> " : "kloudfuse> ";
+          prompt.innerHTML = isHacked ? "root@resolve> " : "resolve> ";
           prompt.style.color = "#4B0082";
           input.style.color = "#4B0082";
           cursor.style.background = "#4B0082";
@@ -276,9 +277,9 @@ function processCommand(cmd) {
           terminal.style.background = "#000";
           terminal.style.color = "#ff0";
           header.style.color = "#ff0";
-          header.querySelector("a").innerHTML = "Kloudfuse OS Version 3.3";
+          header.querySelector("a").innerHTML = "Resolve AI Terminal v1.0";
           header.querySelector("a").style.color = "#ff0";
-          prompt.innerHTML = isHacked ? "root@kloudfuse> " : "kloudfuse> ";
+          prompt.innerHTML = isHacked ? "root@resolve> " : "resolve> ";
           prompt.style.color = "#ff0";
           input.style.color = "#ff0";
           cursor.style.background = "#ff0";
@@ -314,7 +315,7 @@ function processCommand(cmd) {
       return;
     case "exit":
       if (isHacked) {
-        prompt.innerText = "kloudfuse> ";
+        prompt.innerText = "resolve> ";
         isHacked = false;
         response = "Logged out of root access.";
         if (terminal.style.color === "#fff") applyCharityTheme();
@@ -701,7 +702,7 @@ function startTetrisGame() {
     ctx.shadowBlur = 5;
     ctx.shadowOffsetX = 3;
     ctx.shadowOffsetY = 3;
-    ctx.fillText("KLOUDFUSE", WIDTH / 2, gridSize * 3);
+    ctx.fillText("RESOLVE AI", WIDTH / 2, gridSize * 3);
     ctx.shadowBlur = 0;
     ctx.shadowOffsetX = 0;
     ctx.shadowOffsetY = 0;
