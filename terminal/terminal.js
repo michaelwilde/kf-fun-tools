@@ -9,6 +9,45 @@ const header = document.getElementById("header");
 
 let isHacked = false;
 
+// Track all running intervals and timeouts for cleanup
+const activeIntervals = [];
+const activeTimeouts = [];
+const activeAnimationFrames = [];
+let shouldStopAnimations = false;
+
+// Helper functions to track intervals/timeouts
+function trackedSetInterval(callback, delay) {
+  const id = setInterval(callback, delay);
+  activeIntervals.push(id);
+  return id;
+}
+
+function trackedSetTimeout(callback, delay) {
+  const id = setTimeout(callback, delay);
+  activeTimeouts.push(id);
+  return id;
+}
+
+// Track animation frames
+function trackedRequestAnimationFrame(callback) {
+  const id = requestAnimationFrame(callback);
+  activeAnimationFrames.push(id);
+  return id;
+}
+
+// Clear all running intervals and timeouts
+function clearAllTimers() {
+  shouldStopAnimations = true;
+  activeIntervals.forEach(id => clearInterval(id));
+  activeTimeouts.forEach(id => clearTimeout(id));
+  activeAnimationFrames.forEach(id => cancelAnimationFrame(id));
+  activeIntervals.length = 0;
+  activeTimeouts.length = 0;
+  activeAnimationFrames.length = 0;
+  // Reset flag after a brief moment to allow new animations to start
+  setTimeout(() => { shouldStopAnimations = false; }, 100);
+}
+
 // Lighter ROYGBIV colors
 const roybgivColors = [
   "#FF6666", // Light Red
@@ -60,6 +99,28 @@ input.addEventListener("keydown", (e) => {
     processCommand(command);
     input.value = "";
     updateCursorPosition();
+  } else if (e.ctrlKey && e.key === "c") {
+    // Only intercept Ctrl+C if no text is selected (allow copy when text is selected)
+    const selection = window.getSelection().toString();
+    const inputSelection = input.value.substring(input.selectionStart, input.selectionEnd);
+    if (!selection && !inputSelection) {
+      e.preventDefault();
+      e.stopPropagation();
+      // Stop all running processes
+      clearAllTimers();
+      // Stop any running games
+      if (canvas.style.display === "block") {
+        canvas.style.display = "none";
+        input.disabled = false;
+        input.focus();
+      }
+      // Clear the terminal
+      output.innerHTML = "";
+      input.value = "";
+      updateCursorPosition();
+      terminal.scrollTop = terminal.scrollHeight;
+    }
+    // If text is selected, allow default copy behavior
   }
 });
 
@@ -122,7 +183,7 @@ function processCommand(cmd) {
       output.innerHTML += '<div id="hack-output">Hacking initiated.</div>';
       terminal.scrollTop = terminal.scrollHeight;
       let dots = 0;
-      const hackInterval = setInterval(() => {
+      const hackInterval = trackedSetInterval(() => {
         dots++;
         const hackText = "Hacking initiated." + ".".repeat(dots);
         const hackOutput = document.getElementById("hack-output");
@@ -134,7 +195,7 @@ function processCommand(cmd) {
         }
         terminal.scrollTop = terminal.scrollHeight;
       }, 300);
-      setTimeout(() => {
+      trackedSetTimeout(() => {
         clearInterval(hackInterval);
         const grantedDiv = document.createElement("div");
         if (terminal.style.color === "#fff") {
@@ -210,7 +271,7 @@ function processCommand(cmd) {
         }
         output.appendChild(exploreDiv);
         terminal.scrollTop = terminal.scrollHeight;
-        setTimeout(() => {
+        trackedSetTimeout(() => {
           const tabDiv = document.createElement("div");
           if (terminal.style.color === "#fff") {
             applyRainbowText(
@@ -344,7 +405,7 @@ function processCommand(cmd) {
               wargamesOutput.textContent = "Shall we play a game?";
             }
             terminal.scrollTop = terminal.scrollHeight;
-            setTimeout(() => {
+            trackedSetTimeout(() => {
               const launchDiv = document.createElement("div");
               if (terminal.style.color === "#fff") {
                 applyRainbowText(
@@ -358,7 +419,7 @@ function processCommand(cmd) {
               output.appendChild(launchDiv);
               terminal.scrollTop = terminal.scrollHeight;
               let countdown = 5;
-              const countdownInterval = setInterval(() => {
+              const countdownInterval = trackedSetInterval(() => {
                 const countDiv = document.createElement("div");
                 if (terminal.style.color === "#fff") {
                   applyRainbowText(countDiv, `Launch in ${countdown}...`);
@@ -382,7 +443,7 @@ function processCommand(cmd) {
                   }
                   output.appendChild(endDiv);
                   terminal.scrollTop = terminal.scrollHeight;
-                  setTimeout(() => {
+                  trackedSetTimeout(() => {
                     const chessDiv = document.createElement("div");
                     if (terminal.style.color === "#fff") {
                       applyRainbowText(
@@ -473,6 +534,8 @@ function startBrickoutGame() {
     if (e.key === "ArrowRight") rightPressed = true;
     else if (e.key === "ArrowLeft") leftPressed = true;
     if (e.key === "Escape" || (e.ctrlKey && e.key === "c")) {
+      e.preventDefault();
+      e.stopPropagation();
       endGame();
       output.innerHTML = "";
     }
@@ -540,6 +603,10 @@ function startBrickoutGame() {
   }
 
   function draw() {
+    if (shouldStopAnimations) {
+      endGame();
+      return;
+    }
     ctx.clearRect(0, 0, WIDTH, HEIGHT);
     drawBricks();
     drawBall();
@@ -573,7 +640,7 @@ function startBrickoutGame() {
       paddle.x += paddle.speed;
     if (leftPressed && paddle.x > 0) paddle.x -= paddle.speed;
 
-    requestAnimationFrame(draw);
+    trackedRequestAnimationFrame(draw);
   }
 
   function endGame() {
@@ -586,7 +653,7 @@ function startBrickoutGame() {
   }
 
   // Delay game start to show instructions
-  setTimeout(draw, 2000); // 2-second delay
+  trackedSetTimeout(draw, 2000); // 2-second delay
 }
 
 // Tetris Game
@@ -791,6 +858,8 @@ function startTetrisGame() {
     else if (e.key === "ArrowDown") downPressed = true;
     else if (e.key === "ArrowUp" && !e.repeat) rotateShape();
     if (e.key === "Escape" || (e.ctrlKey && e.key === "c")) {
+      e.preventDefault();
+      e.stopPropagation();
       drawGameOverModal();
       setTimeout(() => {
         endGame();
@@ -806,6 +875,10 @@ function startTetrisGame() {
   }
 
   function draw() {
+    if (shouldStopAnimations) {
+      endGame();
+      return;
+    }
     ctx.clearRect(0, 0, WIDTH, HEIGHT);
     drawBackgroundAndLogo();
     drawBoard();
@@ -819,7 +892,7 @@ function startTetrisGame() {
       } else {
         merge();
         clearLines();
-        setTimeout(() => {
+        trackedSetTimeout(() => {
           if (!collide(currentX, currentY, currentShape)) {
             // Check if merge position is still valid
             currentShape = randomShape();
@@ -829,7 +902,7 @@ function startTetrisGame() {
             justMerged = false;
             if (collide(currentX, currentY, currentShape)) {
               drawGameOverModal();
-              setTimeout(() => {
+              trackedSetTimeout(() => {
                 endGame();
                 output.innerHTML =
                   "<div>Game Over! Type anything to continue.</div>";
@@ -860,7 +933,7 @@ function startTetrisGame() {
       }
     }
 
-    requestAnimationFrame(draw);
+    trackedRequestAnimationFrame(draw);
   }
 
   function endGame() {
@@ -873,7 +946,7 @@ function startTetrisGame() {
   }
 
   // Delay game start to show instructions
-  setTimeout(draw, 2000); // 2-second delay
+  trackedSetTimeout(draw, 2000); // 2-second delay
 }
 
 // Macrodata Refinement (MDR) Game
@@ -1001,6 +1074,8 @@ function startMDRGame() {
 
   function keyDownHandler(e) {
     if (e.key === "Escape" || (e.ctrlKey && e.key === "c")) {
+      e.preventDefault();
+      e.stopPropagation();
       endGame();
       output.innerHTML = "";
     }
@@ -1008,6 +1083,10 @@ function startMDRGame() {
   function keyUpHandler(e) {}
 
   function draw() {
+    if (shouldStopAnimations) {
+      endGame();
+      return;
+    }
     ctx.clearRect(0, 0, WIDTH, HEIGHT);
     ctx.fillStyle = "#000";
     ctx.fillRect(0, 0, WIDTH, HEIGHT);
@@ -1092,7 +1171,7 @@ function startMDRGame() {
       ctx.fillText("MA", x + 5, y + 79);
     }
 
-    requestAnimationFrame(draw);
+    trackedRequestAnimationFrame(draw);
   }
 
   function endGame() {
